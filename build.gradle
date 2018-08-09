@@ -1,0 +1,18 @@
+plugins {
+  id 'java'
+}
+
+group 'jamsesso'
+version '1.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.google.code.gson:gson:2.8.5'
+
+  testCompile 'junit:junit:4.12'
+}
