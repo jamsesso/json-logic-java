@@ -60,13 +60,12 @@ public final class JsonLogicParser {
 
     // Handle objects
     JsonObject object = root.getAsJsonObject();
-    Optional<String> maybeKey = object.keySet().stream().findAny();
 
-    if (!maybeKey.isPresent()) {
-      throw new JsonLogicParseException("object did not contain any keys: " + root.toString());
+    if (object.keySet().size() != 1) {
+      throw new JsonLogicParseException("objects must have exactly 1 key defined, found " + object.keySet().size());
     }
 
-    String key = maybeKey.get();
+    String key = object.keySet().stream().findAny().get();
     JsonLogicNode argumentNode = parse(object.get(key));
     JsonLogicArray arguments;
 
@@ -78,6 +77,6 @@ public final class JsonLogicParser {
       arguments = new JsonLogicArray(Collections.singletonList(argumentNode));
     }
 
-    return new JsonLogicOperation(key, arguments);
+    return new JsonLogicOperation(key.toLowerCase(), arguments);
   }
 }

@@ -29,6 +29,7 @@ public class JsonLogicEvaluator {
     extend(NotExpression.DOUBLE);
     extend(LogicExpression.AND);
     extend(LogicExpression.OR);
+    extend(LogExpression.STDOUT);
   }
 
   public JsonLogicEvaluator extend(JsonLogicExpression expression) {
