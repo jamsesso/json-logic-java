@@ -2,8 +2,8 @@ package jamsesso.jsonlogic.evaluator;
 
 import jamsesso.jsonlogic.ast.*;
 import jamsesso.jsonlogic.evaluator.expressions.*;
+import jamsesso.jsonlogic.utils.IndexedStructure;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class JsonLogicEvaluator {
@@ -31,6 +31,9 @@ public class JsonLogicEvaluator {
     extend(LogicExpression.AND);
     extend(LogicExpression.OR);
     extend(LogExpression.STDOUT);
+    extend(MapExpression.INSTANCE);
+    extend(FilterExpression.INSTANCE);
+    extend(ReduceExpression.INSTANCE);
   }
 
   public JsonLogicEvaluator extend(JsonLogicExpression expression) {
@@ -71,16 +74,12 @@ public class JsonLogicEvaluator {
       case NUMBER: {
         int key = ((JsonLogicNumber) variable.getKey()).getValue().intValue();
 
-        if (key < 0) {
-          throw new JsonLogicEvaluationException("var indexes must be >= 0");
-        }
+        if (IndexedStructure.isEligible(data)) {
+          IndexedStructure list = new IndexedStructure(data);
 
-        if (data instanceof List && key < ((List) data).size()) {
-          return ((List) data).get(key);
-        }
-
-        if (data.getClass().isArray() && key < Array.getLength(data)) {
-          return Array.get(data, key);
+          if (key >= 0 && key < list.size()) {
+            return list.get(key);
+          }
         }
 
         return defaultValue;
@@ -114,8 +113,8 @@ public class JsonLogicEvaluator {
   }
 
   private Object evaluatePartialVariable(String key, Object data) throws JsonLogicEvaluationException {
-    if (data instanceof List || data.getClass().isArray()) {
-      int n = data instanceof List ? ((List) data).size() : Array.getLength(data);
+    if (IndexedStructure.isEligible(data)) {
+      IndexedStructure list = new IndexedStructure(data);
       int index;
 
       try {
@@ -125,15 +124,11 @@ public class JsonLogicEvaluator {
         throw new JsonLogicEvaluationException(e);
       }
 
-      if (index < 0 || index > n) {
+      if (index < 0 || index > list.size()) {
         return null;
       }
 
-      if (data instanceof List) {
-        return ((List) data).get(index);
-      }
-
-      return Array.get(data, index);
+      return list.get(index);
     }
 
     if (data instanceof Map) {
