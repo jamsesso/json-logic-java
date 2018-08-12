@@ -1,8 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
 import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
-import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
 import java.util.List;
 
@@ -18,22 +16,12 @@ public class NotExpression implements PreEvaluatedArgumentsExpression {
 
   @Override
   public String key() {
-    return "!";
+    return isDoubleBang ? "!!" : "!";
   }
 
   @Override
-  public Object evaluate(Object argument, Object data) throws JsonLogicEvaluationException {
-    if (argument instanceof List) {
-      List arguments = (List) argument;
-
-      if (arguments.size() != 1) {
-        throw new JsonLogicEvaluationException("not operator (!) expects exactly one argument");
-      }
-
-      argument = arguments.get(0);
-    }
-
-    boolean result = JsonLogic.truthy(argument);
+  public Object evaluate(List arguments, Object data) {
+    boolean result = JsonLogic.truthy(arguments.get(0));
 
     if (isDoubleBang) {
       return result;

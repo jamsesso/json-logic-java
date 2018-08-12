@@ -1,6 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
-import jamsesso.jsonlogic.ast.JsonLogicNode;
+import jamsesso.jsonlogic.ast.JsonLogicArray;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
@@ -20,9 +20,9 @@ public class InequalityExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicNode argument, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
     throws JsonLogicEvaluationException {
-    boolean result = (boolean) delegate.evaluate(evaluator, argument, data);
+    boolean result = (boolean) delegate.evaluate(evaluator, arguments, data);
 
     return !result;
   }

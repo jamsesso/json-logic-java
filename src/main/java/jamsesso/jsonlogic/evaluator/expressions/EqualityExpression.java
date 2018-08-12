@@ -6,7 +6,7 @@ import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
 import java.util.List;
 
-public class EqualityExpression implements ArrayArgumentExpression {
+public class EqualityExpression implements PreEvaluatedArgumentsExpression {
   public static final EqualityExpression INSTANCE = new EqualityExpression();
 
   private EqualityExpression() {

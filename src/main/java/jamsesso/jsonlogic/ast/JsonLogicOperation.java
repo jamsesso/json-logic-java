@@ -2,11 +2,11 @@ package jamsesso.jsonlogic.ast;
 
 public class JsonLogicOperation implements JsonLogicNode {
   private final String operator;
-  private final JsonLogicNode argument;
+  private final JsonLogicArray arguments;
 
-  public JsonLogicOperation(String operator, JsonLogicNode argument) {
+  public JsonLogicOperation(String operator, JsonLogicArray arguments) {
     this.operator = operator;
-    this.argument = argument;
+    this.arguments = arguments;
   }
 
   @Override
@@ -18,7 +18,7 @@ public class JsonLogicOperation implements JsonLogicNode {
     return operator;
   }
 
-  public JsonLogicNode getArgument() {
-    return argument;
+  public JsonLogicArray getArguments() {
+    return arguments;
   }
 }

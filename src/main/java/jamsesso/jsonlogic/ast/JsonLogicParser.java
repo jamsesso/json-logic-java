@@ -67,8 +67,17 @@ public final class JsonLogicParser {
     }
 
     String key = maybeKey.get();
-    JsonLogicNode argument = parse(object.get(key));
+    JsonLogicNode argumentNode = parse(object.get(key));
+    JsonLogicArray arguments;
 
-    return new JsonLogicOperation(key, argument);
+    // Always coerce single-argument operations into a JsonLogicArray with a single element.
+    if (argumentNode instanceof JsonLogicArray) {
+      arguments = (JsonLogicArray) argumentNode;
+    }
+    else {
+      arguments = new JsonLogicArray(Collections.singletonList(argumentNode));
+    }
+
+    return new JsonLogicOperation(key, arguments);
   }
 }

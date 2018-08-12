@@ -34,28 +34,24 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(Object argument, Object data) throws JsonLogicEvaluationException {
-    if (key.equals("+") && argument instanceof String) {
-      try {
-        return Double.parseDouble((String) argument);
-      }
-      catch (NumberFormatException e) {
-        throw new JsonLogicEvaluationException(e);
-      }
-    }
-
-    if (key.equals("-") && argument instanceof Number) {
-      return -1 * ((Number) argument).doubleValue();
-    }
-
-    if (!(argument instanceof List)) {
-      throw new JsonLogicEvaluationException("'" + key() + "' requires an array as an argument");
-    }
-
-    List arguments = (List) argument;
-
+  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
     if (arguments.isEmpty()) {
       return null;
+    }
+
+    if (arguments.size() == 1) {
+      if (key.equals("+") && arguments.get(0) instanceof String) {
+        try {
+          return Double.parseDouble((String) arguments.get(0));
+        }
+        catch (NumberFormatException e) {
+          throw new JsonLogicEvaluationException(e);
+        }
+      }
+
+      if (key.equals("-") && arguments.get(0) instanceof Number) {
+        return -1 * ((Number) arguments.get(0)).doubleValue();
+      }
     }
 
     // Collect all of the arguments

@@ -20,15 +20,8 @@ public class IfExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicNode argument, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
     throws JsonLogicEvaluationException {
-    // Arguments must be an array for if expressions.
-    if (!(argument instanceof JsonLogicArray)) {
-      throw new JsonLogicEvaluationException("if expressions expect an array of arguments");
-    }
-
-    JsonLogicArray arguments = (JsonLogicArray) argument;
-
     // There must be at least 3 arguments
     if (arguments.size() < 3 || arguments.size() % 2 != 1) {
       throw new JsonLogicEvaluationException("if expressions expect an odd number of arguments, minimum of 3");

@@ -38,41 +38,38 @@ public class JsonLogicEvaluator {
 
   public Object evaluate(JsonLogicNode node, Object data) throws JsonLogicEvaluationException {
     switch (node.getType()) {
-      // Evaluate primitive values
-      case PRIMITIVE: {
-        JsonLogicPrimitive<?> primitive = (JsonLogicPrimitive) node;
-        return primitive.getValue();
-      }
-
-      // Evaluate variables
-      case VARIABLE: {
-        JsonLogicVariable variable = (JsonLogicVariable) node;
-        return variable.resolve(data);
-      }
-
-      // Evaluate arrays
-      case ARRAY: {
-        JsonLogicArray array = (JsonLogicArray) node;
-        List<Object> values = new ArrayList<>(array.size());
-
-        for(JsonLogicNode element : array) {
-          values.add(evaluate(element, data));
-        }
-
-        return values;
-      }
-
-      // Evaluate objects
-      default: {
-        JsonLogicOperation operation = (JsonLogicOperation) node;
-        JsonLogicExpression handler = expressions.get(operation.getOperator());
-
-        if (handler == null) {
-          throw new JsonLogicEvaluationException("Undefined operation '" + operation.getOperator() + "'");
-        }
-
-        return handler.evaluate(this, operation.getArgument(), data);
-      }
+      case PRIMITIVE: return evaluate((JsonLogicPrimitive) node);
+      case VARIABLE: return evaluate((JsonLogicVariable) node, data);
+      case ARRAY: return evaluate((JsonLogicArray) node, data);
+      default: return evaluate((JsonLogicOperation) node, data);
     }
+  }
+
+  public Object evaluate(JsonLogicPrimitive<?> primitive) {
+    return primitive.getValue();
+  }
+
+  public Object evaluate(JsonLogicVariable variable, Object data) {
+    return variable.resolve(data);
+  }
+
+  public List<Object> evaluate(JsonLogicArray array, Object data) throws JsonLogicEvaluationException {
+    List<Object> values = new ArrayList<>(array.size());
+
+    for(JsonLogicNode element : array) {
+      values.add(evaluate(element, data));
+    }
+
+    return values;
+  }
+
+  public Object evaluate(JsonLogicOperation operation, Object data) throws JsonLogicEvaluationException {
+    JsonLogicExpression handler = expressions.get(operation.getOperator());
+
+    if (handler == null) {
+      throw new JsonLogicEvaluationException("Undefined operation '" + operation.getOperator() + "'");
+    }
+
+    return handler.evaluate(this, operation.getArguments(), data);
   }
 }

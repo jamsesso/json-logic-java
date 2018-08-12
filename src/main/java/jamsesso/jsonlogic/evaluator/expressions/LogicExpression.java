@@ -23,14 +23,8 @@ public class LogicExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicNode argument, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
     throws JsonLogicEvaluationException {
-    if (!(argument instanceof JsonLogicArray)) {
-      throw new JsonLogicEvaluationException("and operator expects an array of arguments");
-    }
-
-    JsonLogicArray arguments = (JsonLogicArray) argument;
-
     if (arguments.size() < 1) {
       throw new JsonLogicEvaluationException("and operator expects at least 1 argument");
     }
