@@ -1,5 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
+import jamsesso.jsonlogic.JsonLogic;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
@@ -32,7 +33,7 @@ public class NotExpression implements PreEvaluatedArgumentsExpression {
       argument = arguments.get(0);
     }
 
-    boolean result = JsonLogicEvaluator.isTruthy(argument);
+    boolean result = JsonLogic.truthy(argument);
 
     if (isDoubleBang) {
       return result;

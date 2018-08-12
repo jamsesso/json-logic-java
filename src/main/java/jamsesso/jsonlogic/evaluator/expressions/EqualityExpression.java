@@ -1,5 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
+import jamsesso.jsonlogic.JsonLogic;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
@@ -28,11 +29,11 @@ public class EqualityExpression implements ArrayArgumentExpression {
 
     // Use the loose equality matrix
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness#Loose_equality_using
-    if (left == null && right != null) {
-      return false;
+    if (left == null && right == null) {
+      return true;
     }
 
-    if (right == null && left != null) {
+    if (left == null || right == null) {
       return false;
     }
 
@@ -75,7 +76,9 @@ public class EqualityExpression implements ArrayArgumentExpression {
       return compareStringToBoolean((String) right, (Boolean) left);
     }
 
-    return false;
+    // Check non-truthy values
+    return !JsonLogic.truthy(left) && !JsonLogic.truthy(right);
+
   }
 
   private boolean compareNumberToString(Number left, String right) {
@@ -96,6 +99,6 @@ public class EqualityExpression implements ArrayArgumentExpression {
   }
 
   private boolean compareStringToBoolean(String left, Boolean right) {
-    return JsonLogicEvaluator.isTruthy(left) == right;
+    return JsonLogic.truthy(left) == right;
   }
 }

@@ -25,6 +25,10 @@ public class StrictEqualityExpression implements ArrayArgumentExpression {
     Object left = arguments.get(0);
     Object right = arguments.get(1);
 
+    if (left instanceof Number && right instanceof Number) {
+      return ((Number) left).doubleValue() == ((Number) right).doubleValue();
+    }
+
     if (left == right) {
       return true;
     }

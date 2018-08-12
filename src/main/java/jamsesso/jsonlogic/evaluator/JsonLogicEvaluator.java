@@ -75,28 +75,4 @@ public class JsonLogicEvaluator {
       }
     }
   }
-
-  public static boolean isTruthy(Object value) {
-    if (value == null) {
-      return false;
-    }
-
-    if (value instanceof Boolean) {
-      return (boolean) value;
-    }
-
-    if (value instanceof Number) {
-      return ((Number) value).doubleValue() != 0.0;
-    }
-
-    if (value instanceof String) {
-      return !((String) value).isEmpty();
-    }
-
-    if (value instanceof Collection) {
-      return !((Collection) value).isEmpty();
-    }
-
-    return true;
-  }
 }

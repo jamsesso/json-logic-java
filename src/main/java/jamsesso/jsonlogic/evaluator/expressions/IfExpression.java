@@ -1,5 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
+import jamsesso.jsonlogic.JsonLogic;
 import jamsesso.jsonlogic.ast.JsonLogicArray;
 import jamsesso.jsonlogic.ast.JsonLogicNode;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
@@ -36,9 +37,8 @@ public class IfExpression implements JsonLogicExpression {
     for (int i = 0; i < arguments.size() - 1; i += 2) {
       JsonLogicNode condition = arguments.get(i);
       JsonLogicNode resultIfTrue = arguments.get(i + 1);
-      Object conditionResult = evaluator.evaluate(condition, data);
 
-      if (evaluator.isTruthy(conditionResult)) {
+      if (JsonLogic.truthy(evaluator.evaluate(condition, data))) {
         return evaluator.evaluate(resultIfTrue, data);
       }
     }

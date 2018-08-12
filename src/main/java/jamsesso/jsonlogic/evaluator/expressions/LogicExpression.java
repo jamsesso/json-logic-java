@@ -1,5 +1,6 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
+import jamsesso.jsonlogic.JsonLogic;
 import jamsesso.jsonlogic.ast.JsonLogicArray;
 import jamsesso.jsonlogic.ast.JsonLogicNode;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
@@ -39,7 +40,7 @@ public class LogicExpression implements JsonLogicExpression {
     for (JsonLogicNode element : arguments) {
       result = evaluator.evaluate(element, data);
 
-      if ((isAnd && !JsonLogicEvaluator.isTruthy(result)) || (!isAnd && JsonLogicEvaluator.isTruthy(result))) {
+      if ((isAnd && !JsonLogic.truthy(result)) || (!isAnd && JsonLogic.truthy(result))) {
         return result;
       }
     }
