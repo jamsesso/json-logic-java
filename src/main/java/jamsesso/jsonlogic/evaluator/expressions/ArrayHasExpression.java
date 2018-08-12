@@ -7,42 +7,40 @@ import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 import jamsesso.jsonlogic.utils.IndexedStructure;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ArrayHasExpression implements JsonLogicExpression {
+  public static final ArrayHasExpression SOME = new ArrayHasExpression(true);
+  public static final ArrayHasExpression NONE = new ArrayHasExpression(false);
 
-public class FilterExpression implements JsonLogicExpression {
-  public static final FilterExpression INSTANCE = new FilterExpression();
+  private final boolean isSome;
 
-  private FilterExpression() {
-    // Use INSTANCE instead.
+  private ArrayHasExpression(boolean isSome) {
+    this.isSome = isSome;
   }
 
   @Override
   public String key() {
-    return "filter";
+    return isSome ? "some" : "none";
   }
 
   @Override
   public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
     throws JsonLogicEvaluationException {
     if (arguments.size() != 2) {
-      throw new JsonLogicEvaluationException("filter expects exactly 2 arguments");
+      throw new JsonLogicEvaluationException("some expects exactly 2 arguments");
     }
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
     if (!IndexedStructure.isEligible(maybeArray)) {
-      throw new JsonLogicEvaluationException("first argument to filter must be a valid array");
+      throw new JsonLogicEvaluationException("first argument to some must be a valid array");
     }
-
-    List<Object> result = new ArrayList<>();
 
     for (Object item : new IndexedStructure(maybeArray)) {
       if(JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item))) {
-        result.add(item);
+        return isSome;
       }
     }
 
-    return result;
+    return !isSome;
   }
 }

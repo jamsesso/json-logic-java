@@ -34,6 +34,11 @@ public class JsonLogicEvaluator {
     extend(MapExpression.INSTANCE);
     extend(FilterExpression.INSTANCE);
     extend(ReduceExpression.INSTANCE);
+    extend(AllExpression.INSTANCE);
+    extend(ArrayHasExpression.SOME);
+    extend(ArrayHasExpression.NONE);
+    extend(MergeExpression.INSTANCE);
+    extend(InExpression.INSTANCE);
   }
 
   public JsonLogicEvaluator extend(JsonLogicExpression expression) {

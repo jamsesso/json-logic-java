@@ -34,10 +34,9 @@ public class MapExpression implements JsonLogicExpression {
       throw new JsonLogicEvaluationException("first argument to map must be a valid array");
     }
 
-    IndexedStructure list = new IndexedStructure(maybeArray);
     List<Object> result = new ArrayList<>();
 
-    for (Object item : list) {
+    for (Object item : new IndexedStructure(maybeArray)) {
       result.add(evaluator.evaluate(arguments.get(1), item));
     }
 
