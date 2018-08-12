@@ -39,6 +39,8 @@ public class JsonLogicEvaluator {
     extend(ArrayHasExpression.NONE);
     extend(MergeExpression.INSTANCE);
     extend(InExpression.INSTANCE);
+    extend(ConcatenateExpression.INSTANCE);
+    extend(SubstringExpression.INSTANCE);
   }
 
   public JsonLogicEvaluator extend(JsonLogicExpression expression) {
