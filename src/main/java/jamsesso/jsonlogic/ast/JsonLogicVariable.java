@@ -1,12 +1,12 @@
 package jamsesso.jsonlogic.ast;
 
-import java.util.Map;
-
 public class JsonLogicVariable implements JsonLogicNode {
-  private final String key;
+  private final JsonLogicPrimitive<?> key;
+  private final JsonLogicNode defaultValue;
 
-  public JsonLogicVariable(String key) {
+  public JsonLogicVariable(JsonLogicPrimitive<?> key, JsonLogicNode defaultValue) {
     this.key = key;
+    this.defaultValue = defaultValue;
   }
 
   @Override
@@ -14,37 +14,11 @@ public class JsonLogicVariable implements JsonLogicNode {
     return JsonLogicNodeType.VARIABLE;
   }
 
-  public String getKey() {
+  public JsonLogicPrimitive<?> getKey() {
     return key;
   }
 
-  public Object resolve(Object variables) {
-    if (key.isEmpty()) {
-      return variables;
-    }
-
-    if (variables instanceof Map) {
-      Map variableMap = (Map) variables;
-      String[] keys = key.split("\\.");
-      Object value = variableMap.get(keys[0]);
-
-      for (int i = 1; i < keys.length; i++) {
-        if (!(value instanceof Map)) {
-          return null;
-        }
-
-        variableMap = (Map) value;
-
-        if (!variableMap.containsKey(keys[i])) {
-          return null;
-        }
-
-        value = variableMap.get(keys[i]);
-      }
-
-      return value;
-    }
-
-    return null;
+  public JsonLogicNode getDefaultValue() {
+    return defaultValue;
   }
 }

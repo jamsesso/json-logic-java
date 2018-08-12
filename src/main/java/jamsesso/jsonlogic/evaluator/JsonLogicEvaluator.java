@@ -3,6 +3,7 @@ package jamsesso.jsonlogic.evaluator;
 import jamsesso.jsonlogic.ast.*;
 import jamsesso.jsonlogic.evaluator.expressions.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class JsonLogicEvaluator {
@@ -47,11 +48,99 @@ public class JsonLogicEvaluator {
   }
 
   public Object evaluate(JsonLogicPrimitive<?> primitive) {
-    return primitive.getValue();
+    switch (primitive.getPrimitiveType()) {
+      case NUMBER: return ((JsonLogicNumber) primitive).getValue().doubleValue();
+
+      default:
+        return primitive.getValue();
+    }
   }
 
-  public Object evaluate(JsonLogicVariable variable, Object data) {
-    return variable.resolve(data);
+  public Object evaluate(JsonLogicVariable variable, Object data) throws JsonLogicEvaluationException {
+    Object defaultValue = evaluate(variable.getDefaultValue(), null);
+
+    if (data == null) {
+      return defaultValue;
+    }
+
+    switch (variable.getKey().getPrimitiveType()) {
+      // Handle if the first argument is null.
+      case NULL: return evaluate(variable.getDefaultValue(), null);
+
+      // Handle the case when the key is a number - in this case, the data must be an array or list.
+      case NUMBER: {
+        int key = ((JsonLogicNumber) variable.getKey()).getValue().intValue();
+
+        if (key < 0) {
+          throw new JsonLogicEvaluationException("var indexes must be >= 0");
+        }
+
+        if (data instanceof List && key < ((List) data).size()) {
+          return ((List) data).get(key);
+        }
+
+        if (data.getClass().isArray() && key < Array.getLength(data)) {
+          return Array.get(data, key);
+        }
+
+        return defaultValue;
+      }
+
+      // Handle the case when the key is a string, potentially referencing an infinitely-deep map: x.y.z
+      case STRING: {
+        String key = ((JsonLogicString) variable.getKey()).getValue();
+
+        if (key.isEmpty()) {
+          return data;
+        }
+
+        String[] keys = key.split("\\.");
+        Object result = data;
+
+        for (int i = 0; i < keys.length; i++) {
+          result = evaluatePartialVariable(keys[i], result);
+
+          if (result == null) {
+            return defaultValue;
+          }
+        }
+
+        return result;
+      }
+
+      default:
+        throw new JsonLogicEvaluationException("var first argument must be null, number, or string");
+    }
+  }
+
+  private Object evaluatePartialVariable(String key, Object data) throws JsonLogicEvaluationException {
+    if (data instanceof List || data.getClass().isArray()) {
+      int n = data instanceof List ? ((List) data).size() : Array.getLength(data);
+      int index;
+
+      try {
+        index = Integer.parseInt(key);
+      }
+      catch (NumberFormatException e) {
+        throw new JsonLogicEvaluationException(e);
+      }
+
+      if (index < 0 || index > n) {
+        return null;
+      }
+
+      if (data instanceof List) {
+        return ((List) data).get(index);
+      }
+
+      return Array.get(data, index);
+    }
+
+    if (data instanceof Map) {
+      return ((Map) data).get(key);
+    }
+
+    return null;
   }
 
   public List<Object> evaluate(JsonLogicArray array, Object data) throws JsonLogicEvaluationException {

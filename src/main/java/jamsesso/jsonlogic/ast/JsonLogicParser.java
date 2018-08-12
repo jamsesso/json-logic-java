@@ -58,14 +58,14 @@ public final class JsonLogicParser {
       return new JsonLogicArray(elements);
     }
 
-    // Handle objects
+    // Handle objects & variables
     JsonObject object = root.getAsJsonObject();
 
     if (object.keySet().size() != 1) {
       throw new JsonLogicParseException("objects must have exactly 1 key defined, found " + object.keySet().size());
     }
 
-    String key = object.keySet().stream().findAny().get();
+    String key = object.keySet().stream().findAny().get().toLowerCase();
     JsonLogicNode argumentNode = parse(object.get(key));
     JsonLogicArray arguments;
 
@@ -77,6 +77,21 @@ public final class JsonLogicParser {
       arguments = new JsonLogicArray(Collections.singletonList(argumentNode));
     }
 
-    return new JsonLogicOperation(key.toLowerCase(), arguments);
+    // Special case for variable handling
+    if ("var".equals(key)) {
+      if (arguments.size() < 1) {
+        throw new JsonLogicParseException("var requires at least one argument");
+      }
+
+      if (!(arguments.get(0) instanceof JsonLogicPrimitive)) {
+        throw new JsonLogicParseException("first argument to var must be a primitive");
+      }
+
+      JsonLogicNode defaultValue = arguments.size() > 1 ? arguments.get(1) : JsonLogicNull.NULL;
+      return new JsonLogicVariable((JsonLogicPrimitive) arguments.get(0), defaultValue);
+    }
+
+    // Handle regular operations
+    return new JsonLogicOperation(key, arguments);
   }
 }
