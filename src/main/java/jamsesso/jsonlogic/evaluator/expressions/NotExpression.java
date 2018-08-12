@@ -21,7 +21,14 @@ public class NotExpression implements PreEvaluatedArgumentsExpression {
 
   @Override
   public Object evaluate(List arguments, Object data) {
-    boolean result = JsonLogic.truthy(arguments.get(0));
+    boolean result;
+
+    if (arguments.isEmpty()) {
+      result = false;
+    }
+    else {
+      result = JsonLogic.truthy(arguments.get(0));
+    }
 
     if (isDoubleBang) {
       return result;
