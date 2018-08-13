@@ -41,6 +41,8 @@ public class JsonLogicEvaluator {
     extend(InExpression.INSTANCE);
     extend(ConcatenateExpression.INSTANCE);
     extend(SubstringExpression.INSTANCE);
+    extend(MissingExpression.ALL);
+    extend(MissingExpression.SOME);
   }
 
   public JsonLogicEvaluator extend(JsonLogicExpression expression) {
