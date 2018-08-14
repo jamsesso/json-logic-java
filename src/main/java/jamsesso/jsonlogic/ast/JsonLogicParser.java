@@ -2,7 +2,9 @@ package jamsesso.jsonlogic.ast;
 
 import com.google.gson.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class JsonLogicParser {
   private JsonLogicParser() {

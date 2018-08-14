@@ -1,6 +1,5 @@
 package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
 import org.junit.Test;
 
 import java.util.Collections;

@@ -3,37 +3,89 @@ package jamsesso.jsonlogic;
 import jamsesso.jsonlogic.ast.JsonLogicNode;
 import jamsesso.jsonlogic.ast.JsonLogicParser;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
+import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
+import jamsesso.jsonlogic.evaluator.expressions.*;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
+import java.util.*;
+import java.util.function.Function;
 
 public final class JsonLogic {
-  private static final JsonLogicEvaluator DEFAULT_EVALUATOR = new JsonLogicEvaluator();
+  private final List<JsonLogicExpression> expressions;
+  private final Map<String, JsonLogicNode> parseCache;
+  private JsonLogicEvaluator evaluator;
 
-  private final String json;
-  private final JsonLogicEvaluator evaluator;
-  private JsonLogicNode parseCache;
+  public JsonLogic() {
+    this.expressions = new ArrayList<>();
+    this.parseCache = new HashMap<>();
 
-  public JsonLogic(String json) {
-    this(json, DEFAULT_EVALUATOR);
+    // Add default operations
+    addOperation(MathExpression.ADD);
+    addOperation(MathExpression.SUBTRACT);
+    addOperation(MathExpression.MULTIPLY);
+    addOperation(MathExpression.DIVIDE);
+    addOperation(MathExpression.MODULO);
+    addOperation(MathExpression.MIN);
+    addOperation(MathExpression.MAX);
+    addOperation(NumericComparisonExpression.GT);
+    addOperation(NumericComparisonExpression.GTE);
+    addOperation(NumericComparisonExpression.LT);
+    addOperation(NumericComparisonExpression.LTE);
+    addOperation(IfExpression.INSTANCE);
+    addOperation(EqualityExpression.INSTANCE);
+    addOperation(InequalityExpression.INSTANCE);
+    addOperation(StrictEqualityExpression.INSTANCE);
+    addOperation(StrictInequalityExpression.INSTANCE);
+    addOperation(NotExpression.SINGLE);
+    addOperation(NotExpression.DOUBLE);
+    addOperation(LogicExpression.AND);
+    addOperation(LogicExpression.OR);
+    addOperation(LogExpression.STDOUT);
+    addOperation(MapExpression.INSTANCE);
+    addOperation(FilterExpression.INSTANCE);
+    addOperation(ReduceExpression.INSTANCE);
+    addOperation(AllExpression.INSTANCE);
+    addOperation(ArrayHasExpression.SOME);
+    addOperation(ArrayHasExpression.NONE);
+    addOperation(MergeExpression.INSTANCE);
+    addOperation(InExpression.INSTANCE);
+    addOperation(ConcatenateExpression.INSTANCE);
+    addOperation(SubstringExpression.INSTANCE);
+    addOperation(MissingExpression.ALL);
+    addOperation(MissingExpression.SOME);
   }
 
-  public JsonLogic(String json, JsonLogicEvaluator evaluator) {
-    this.json = json;
-    this.evaluator = evaluator;
+  public JsonLogic addOperation(String name, Function<Object[], Object> function) {
+    return addOperation(new PreEvaluatedArgumentsExpression() {
+      @Override
+      public Object evaluate(List arguments, Object data) {
+        return function.apply(arguments.toArray());
+      }
+
+      @Override
+      public String key() {
+        return name;
+      }
+    });
   }
 
-  public Object apply(Object data) throws JsonLogicException {
-    if (parseCache == null) {
-      parseCache = JsonLogicParser.parse(json);
+  public JsonLogic addOperation(JsonLogicExpression expression) {
+    expressions.add(expression);
+    evaluator = null;
+
+    return this;
+  }
+
+  public Object apply(String json, Object data) throws JsonLogicException {
+    if (!parseCache.containsKey(json)) {
+      parseCache.put(json, JsonLogicParser.parse(json));
     }
 
-    return evaluator.evaluate(parseCache, data);
-  }
+    if (evaluator == null) {
+      evaluator = new JsonLogicEvaluator(expressions);
+    }
 
-  public static Object apply(String json, Object data) throws JsonLogicException {
-    JsonLogic jsonLogic = new JsonLogic(json);
-    return jsonLogic.apply(data);
+    return evaluator.evaluate(parseCache.get(json), data);
   }
 
   public static boolean truthy(Object value) {

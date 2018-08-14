@@ -1,16 +1,16 @@
-package jamsesso.jsonlogic.evaluator;
+package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.JsonLogicException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class IfExpressionTests {
+  private static final JsonLogic jsonLogic = new JsonLogic();
+
   @Test
   public void testIfTrue() throws JsonLogicException {
     String json = "{\"if\" : [true, \"yes\", \"no\"]}";
-    Object result = JsonLogic.apply(json, null);
+    Object result = jsonLogic.apply(json, null);
 
     assertEquals("yes", result);
   }
@@ -18,7 +18,7 @@ public class IfExpressionTests {
   @Test
   public void testIfFalse() throws JsonLogicException {
     String json = "{\"if\" : [false, \"yes\", \"no\"]}";
-    Object result = JsonLogic.apply(json, null);
+    Object result = jsonLogic.apply(json, null);
 
     assertEquals("no", result);
   }
@@ -30,7 +30,7 @@ public class IfExpressionTests {
                   "  {\"<\": [50, 100]}, \"liquid\",\n" +
                   "  \"gas\"\n" +
                   "]}";
-    Object result = JsonLogic.apply(json, null);
+    Object result = jsonLogic.apply(json, null);
 
     assertEquals("liquid", result);
   }

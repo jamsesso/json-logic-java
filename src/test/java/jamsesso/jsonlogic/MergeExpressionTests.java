@@ -1,7 +1,5 @@
-package jamsesso.jsonlogic.evaluator;
+package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.JsonLogicException;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,9 +7,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class MergeExpressionTests {
+  private static final JsonLogic jsonLogic = new JsonLogic();
+
   @Test
   public void testMerge() throws JsonLogicException {
-    Object result = JsonLogic.apply("{\"merge\": [[1, 2], [3, 4]]}", null);
+    Object result = jsonLogic.apply("{\"merge\": [[1, 2], [3, 4]]}", null);
 
     assertEquals(4, ((List) result).size());
     assertEquals(1.0, ((List) result).get(0));
@@ -22,7 +22,7 @@ public class MergeExpressionTests {
 
   @Test
   public void testMergeWithNonArrays() throws JsonLogicException {
-    Object result = JsonLogic.apply("{\"merge\": [1, 2, [3, 4]]}", null);
+    Object result = jsonLogic.apply("{\"merge\": [1, 2, [3, 4]]}", null);
 
     assertEquals(4, ((List) result).size());
     assertEquals(1.0, ((List) result).get(0));

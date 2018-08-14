@@ -1,7 +1,6 @@
 package jamsesso.jsonlogic.evaluator;
 
 import jamsesso.jsonlogic.ast.*;
-import jamsesso.jsonlogic.evaluator.expressions.*;
 import jamsesso.jsonlogic.utils.IndexedStructure;
 
 import java.util.*;
@@ -9,45 +8,10 @@ import java.util.*;
 public class JsonLogicEvaluator {
   private final Map<String, JsonLogicExpression> expressions = new HashMap<>();
 
-  public JsonLogicEvaluator() {
-    extend(MathExpression.ADD);
-    extend(MathExpression.SUBTRACT);
-    extend(MathExpression.MULTIPLY);
-    extend(MathExpression.DIVIDE);
-    extend(MathExpression.MODULO);
-    extend(MathExpression.MIN);
-    extend(MathExpression.MAX);
-    extend(NumericComparisonExpression.GT);
-    extend(NumericComparisonExpression.GTE);
-    extend(NumericComparisonExpression.LT);
-    extend(NumericComparisonExpression.LTE);
-    extend(IfExpression.INSTANCE);
-    extend(EqualityExpression.INSTANCE);
-    extend(InequalityExpression.INSTANCE);
-    extend(StrictEqualityExpression.INSTANCE);
-    extend(StrictInequalityExpression.INSTANCE);
-    extend(NotExpression.SINGLE);
-    extend(NotExpression.DOUBLE);
-    extend(LogicExpression.AND);
-    extend(LogicExpression.OR);
-    extend(LogExpression.STDOUT);
-    extend(MapExpression.INSTANCE);
-    extend(FilterExpression.INSTANCE);
-    extend(ReduceExpression.INSTANCE);
-    extend(AllExpression.INSTANCE);
-    extend(ArrayHasExpression.SOME);
-    extend(ArrayHasExpression.NONE);
-    extend(MergeExpression.INSTANCE);
-    extend(InExpression.INSTANCE);
-    extend(ConcatenateExpression.INSTANCE);
-    extend(SubstringExpression.INSTANCE);
-    extend(MissingExpression.ALL);
-    extend(MissingExpression.SOME);
-  }
-
-  public JsonLogicEvaluator extend(JsonLogicExpression expression) {
-    expressions.put(expression.key().toLowerCase(), expression);
-    return this;
+  public JsonLogicEvaluator(Collection<JsonLogicExpression> expressions) {
+    for (JsonLogicExpression expression : expressions) {
+      this.expressions.put(expression.key(), expression);
+    }
   }
 
   public Object evaluate(JsonLogicNode node, Object data) throws JsonLogicEvaluationException {
@@ -105,10 +69,10 @@ public class JsonLogicEvaluator {
         String[] keys = key.split("\\.");
         Object result = data;
 
-        for (int i = 0; i < keys.length; i++) {
-          result = evaluatePartialVariable(keys[i], result);
+        for(String partial : keys) {
+          result = evaluatePartialVariable(partial, result);
 
-          if (result == null) {
+          if(result == null) {
             return defaultValue;
           }
         }

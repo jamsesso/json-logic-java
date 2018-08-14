@@ -2,7 +2,6 @@ package jamsesso.jsonlogic.evaluator.expressions;
 
 import jamsesso.jsonlogic.JsonLogic;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
-import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
 import java.util.List;
 

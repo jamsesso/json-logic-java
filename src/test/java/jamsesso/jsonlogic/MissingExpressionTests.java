@@ -1,7 +1,5 @@
-package jamsesso.jsonlogic.evaluator;
+package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.JsonLogicException;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -11,13 +9,15 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class MissingExpressionTests {
+  private static final JsonLogic jsonLogic = new JsonLogic();
+
   @Test
   public void testMissing() throws JsonLogicException {
     Map<String, Object> data = new HashMap<String, Object>() {{
       put("a", "apple");
       put("c", "carrot");
     }};
-    Object result = JsonLogic.apply("{\"missing\": [\"a\", \"b\"]}", data);
+    Object result = jsonLogic.apply("{\"missing\": [\"a\", \"b\"]}", data);
 
     assertEquals(1, ((List) result).size());
     assertEquals("b", ((List) result).get(0));
@@ -29,7 +29,7 @@ public class MissingExpressionTests {
       put("a", "apple");
       put("c", "carrot");
     }};
-    Object result = JsonLogic.apply("{\"missing_some\": [1, [\"a\", \"b\"]]}", data);
+    Object result = jsonLogic.apply("{\"missing_some\": [1, [\"a\", \"b\"]]}", data);
 
     assertEquals(0, ((List) result).size());
   }
@@ -39,7 +39,7 @@ public class MissingExpressionTests {
     Map<String, Object> data = new HashMap<String, Object>() {{
       put("a", "apple");
     }};
-    Object result = JsonLogic.apply("{\"missing_some\": [2, [\"a\", \"b\", \"c\"]]}", data);
+    Object result = jsonLogic.apply("{\"missing_some\": [2, [\"a\", \"b\", \"c\"]]}", data);
 
     assertEquals(2, ((List) result).size());
     assertEquals("b", ((List) result).get(0));
@@ -60,7 +60,7 @@ public class MissingExpressionTests {
                   "  \"We require first name, last name, and one phone number.\",\n" +
                   "  \"OK to proceed\"\n" +
                   "]}";
-    Object result = JsonLogic.apply(json, data);
+    Object result = jsonLogic.apply(json, data);
 
     assertEquals("We require first name, last name, and one phone number.", result);
   }

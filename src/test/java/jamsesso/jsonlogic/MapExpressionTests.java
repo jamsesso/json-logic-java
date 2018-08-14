@@ -1,7 +1,5 @@
-package jamsesso.jsonlogic.evaluator;
+package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.JsonLogicException;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,6 +7,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class MapExpressionTests {
+  private static final JsonLogic jsonLogic = new JsonLogic();
+
   @Test
   public void testMap() throws JsonLogicException {
     String json = "{\"map\": [\n" +
@@ -16,7 +16,7 @@ public class MapExpressionTests {
                   "  {\"*\": [{\"var\": \"\"}, 2]}\n" +
                   "]}";
     int[] data = new int[] {1, 2, 3};
-    Object result = JsonLogic.apply(json, data);
+    Object result = jsonLogic.apply(json, data);
 
     assertEquals(3, ((List) result).size());
     assertEquals(2.0, ((List) result).get(0));

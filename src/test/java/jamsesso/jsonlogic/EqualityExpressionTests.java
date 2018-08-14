@@ -1,24 +1,24 @@
-package jamsesso.jsonlogic.evaluator;
+package jamsesso.jsonlogic;
 
-import jamsesso.jsonlogic.JsonLogic;
-import jamsesso.jsonlogic.JsonLogicException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class EqualityExpressionTests {
+  private static final JsonLogic jsonLogic = new JsonLogic();
+
   @Test
   public void testSameValueSameType() throws JsonLogicException {
-    assertEquals(true, JsonLogic.apply("{\"==\": [1, 1]}", null));
+    assertEquals(true, jsonLogic.apply("{\"==\": [1, 1]}", null));
   }
 
   @Test
   public void testSameValueDifferentType() throws JsonLogicException {
-    assertEquals(true, JsonLogic.apply("{\"==\": [1, 1]}", null));
+    assertEquals(true, jsonLogic.apply("{\"==\": [1, 1]}", null));
   }
 
   @Test
   public void testDifferentValueDifferentType() throws JsonLogicException {
-    assertEquals(true, JsonLogic.apply("{\"==\": [[], false]}", null));
+    assertEquals(true, jsonLogic.apply("{\"==\": [[], false]}", null));
   }
 }
