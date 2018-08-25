@@ -4,7 +4,7 @@ import jamsesso.jsonlogic.ast.JsonLogicArray;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
-import jamsesso.jsonlogic.utils.IndexedStructure;
+import jamsesso.jsonlogic.utils.ArrayLike;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +30,14 @@ public class ReduceExpression implements JsonLogicExpression {
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
-    if (!IndexedStructure.isEligible(maybeArray)) {
+    if (!ArrayLike.isEligible(maybeArray)) {
       throw new JsonLogicEvaluationException("first argument to reduce must be a valid array");
     }
 
     Map<String, Object> context = new HashMap<>();
     context.put("accumulator", evaluator.evaluate(arguments.get(2), data));
 
-    for (Object item : new IndexedStructure(maybeArray)) {
+    for (Object item : new ArrayLike(maybeArray)) {
       context.put("current", item);
       context.put("accumulator", evaluator.evaluate(arguments.get(1), context));
     }

@@ -1,7 +1,7 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
-import jamsesso.jsonlogic.utils.IndexedStructure;
+import jamsesso.jsonlogic.utils.ArrayLike;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
       return ((String) arguments.get(1)).contains(arguments.get(0).toString());
     }
 
-    if (IndexedStructure.isEligible(arguments.get(1))) {
-      return new IndexedStructure(arguments.get(1)).contains(arguments.get(0));
+    if (ArrayLike.isEligible(arguments.get(1))) {
+      return new ArrayLike(arguments.get(1)).contains(arguments.get(0));
     }
 
     throw new JsonLogicEvaluationException("in expects the second argument to be either a string or array");

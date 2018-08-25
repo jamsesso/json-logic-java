@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 public final class JsonLogicParser {
+  private static final JsonParser PARSER = new JsonParser();
+
   private JsonLogicParser() {
     // Utility class has no public constructor.
   }
 
   public static JsonLogicNode parse(String json) throws JsonLogicParseException {
-    JsonParser parser = new JsonParser();
-
     try {
-      return parse(parser.parse(json));
+      return parse(PARSER.parse(json));
     }
     catch (JsonSyntaxException e) {
       throw new JsonLogicParseException(e);
@@ -85,12 +85,8 @@ public final class JsonLogicParser {
         throw new JsonLogicParseException("var requires at least one argument");
       }
 
-      if (!(arguments.get(0) instanceof JsonLogicPrimitive)) {
-        throw new JsonLogicParseException("first argument to var must be a primitive");
-      }
-
       JsonLogicNode defaultValue = arguments.size() > 1 ? arguments.get(1) : JsonLogicNull.NULL;
-      return new JsonLogicVariable((JsonLogicPrimitive) arguments.get(0), defaultValue);
+      return new JsonLogicVariable(arguments.get(0), defaultValue);
     }
 
     // Handle regular operations

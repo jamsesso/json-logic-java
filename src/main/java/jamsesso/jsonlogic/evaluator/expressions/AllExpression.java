@@ -5,7 +5,7 @@ import jamsesso.jsonlogic.ast.JsonLogicArray;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
-import jamsesso.jsonlogic.utils.IndexedStructure;
+import jamsesso.jsonlogic.utils.ArrayLike;
 
 public class AllExpression implements JsonLogicExpression {
   public static final AllExpression INSTANCE = new AllExpression();
@@ -28,11 +28,11 @@ public class AllExpression implements JsonLogicExpression {
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
-    if (!IndexedStructure.isEligible(maybeArray)) {
+    if (!ArrayLike.isEligible(maybeArray)) {
       throw new JsonLogicEvaluationException("first argument to all must be a valid array");
     }
 
-    for (Object item : new IndexedStructure(maybeArray)) {
+    for (Object item : new ArrayLike(maybeArray)) {
       if(!JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item))) {
         return false;
       }

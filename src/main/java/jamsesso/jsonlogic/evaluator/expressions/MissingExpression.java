@@ -1,7 +1,8 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
-import jamsesso.jsonlogic.utils.IndexedStructure;
+import jamsesso.jsonlogic.utils.ArrayLike;
+import jamsesso.jsonlogic.utils.MapLike;
 
 import java.util.*;
 
@@ -22,17 +23,18 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
 
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
-    if (!(data instanceof Map)) {
+    if (!MapLike.isEligible(data)) {
       throw new JsonLogicEvaluationException(key() + " only works when the data is a map");
     }
 
-    if (isSome && (!IndexedStructure.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
+    if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
       throw new JsonLogicEvaluationException("missing_some expects first argument to be an integer and the second " +
                                              "argument to be an array");
     }
 
-    List options = isSome ? new IndexedStructure(arguments.get(1)) : arguments;
-    Set providedKeys = ((Map) data).keySet();
+    Map map = new MapLike(data);
+    List options = isSome ? new ArrayLike(arguments.get(1)) : arguments;
+    Set providedKeys = map.keySet();
     Set requiredKeys = new HashSet<>(options);
 
     requiredKeys.removeAll(providedKeys); // Keys that I need but do not have

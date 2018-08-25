@@ -31,7 +31,8 @@ public final class JsonLogic {
     addOperation(NumericComparisonExpression.GTE);
     addOperation(NumericComparisonExpression.LT);
     addOperation(NumericComparisonExpression.LTE);
-    addOperation(IfExpression.INSTANCE);
+    addOperation(IfExpression.IF);
+    addOperation(IfExpression.TERNARY);
     addOperation(EqualityExpression.INSTANCE);
     addOperation(InequalityExpression.INSTANCE);
     addOperation(StrictEqualityExpression.INSTANCE);

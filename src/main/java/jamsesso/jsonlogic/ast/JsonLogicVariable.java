@@ -1,10 +1,10 @@
 package jamsesso.jsonlogic.ast;
 
 public class JsonLogicVariable implements JsonLogicNode {
-  private final JsonLogicPrimitive<?> key;
+  private final JsonLogicNode key;
   private final JsonLogicNode defaultValue;
 
-  public JsonLogicVariable(JsonLogicPrimitive<?> key, JsonLogicNode defaultValue) {
+  public JsonLogicVariable(JsonLogicNode key, JsonLogicNode defaultValue) {
     this.key = key;
     this.defaultValue = defaultValue;
   }
@@ -14,7 +14,7 @@ public class JsonLogicVariable implements JsonLogicNode {
     return JsonLogicNodeType.VARIABLE;
   }
 
-  public JsonLogicPrimitive<?> getKey() {
+  public JsonLogicNode getKey() {
     return key;
   }
 

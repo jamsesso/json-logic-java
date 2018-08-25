@@ -8,15 +8,18 @@ import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 
 public class IfExpression implements JsonLogicExpression {
-  public static final IfExpression INSTANCE = new IfExpression();
+  public static final IfExpression IF = new IfExpression("if");
+  public static final IfExpression TERNARY = new IfExpression("?:");
 
-  private IfExpression() {
-    // Only one instance can be constructed. Use IfExpression.INSTANCE
+  private final String operator;
+
+  private IfExpression(String operator) {
+    this.operator = operator;
   }
 
   @Override
   public String key() {
-    return "if";
+    return operator;
   }
 
   @Override
@@ -24,7 +27,7 @@ public class IfExpression implements JsonLogicExpression {
     throws JsonLogicEvaluationException {
     // There must be at least 3 arguments
     if (arguments.size() < 3 || arguments.size() % 2 != 1) {
-      throw new JsonLogicEvaluationException("if expressions expect an odd number of arguments, minimum of 3");
+      return null;
     }
 
     for (int i = 0; i < arguments.size() - 1; i += 2) {
