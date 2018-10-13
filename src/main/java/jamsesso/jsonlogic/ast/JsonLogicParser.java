@@ -81,12 +81,8 @@ public final class JsonLogicParser {
 
     // Special case for variable handling
     if ("var".equals(key)) {
-      if (arguments.size() < 1) {
-        throw new JsonLogicParseException("var requires at least one argument");
-      }
-
       JsonLogicNode defaultValue = arguments.size() > 1 ? arguments.get(1) : JsonLogicNull.NULL;
-      return new JsonLogicVariable(arguments.get(0), defaultValue);
+      return new JsonLogicVariable(arguments.size() < 1 ? JsonLogicNull.NULL : arguments.get(0), defaultValue);
     }
 
     // Handle regular operations

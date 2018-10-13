@@ -35,11 +35,20 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
     for (int i = 0; i < n; i++) {
       Object value = arguments.get(i);
 
-      if (!(value instanceof Number)) {
+      if (value instanceof String) {
+        try {
+          values[i] = Double.parseDouble((String) value);
+        }
+        catch (NumberFormatException e) {
+          return false;
+        }
+      }
+      else if (!(value instanceof Number)) {
         return false;
       }
-
-      values[i] = ((Number) value).doubleValue();
+      else {
+        values[i] = ((Number) value).doubleValue();
+      }
     }
 
     // Handle between comparisons (supported for < and <=)

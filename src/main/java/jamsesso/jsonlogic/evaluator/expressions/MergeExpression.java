@@ -1,17 +1,15 @@
 package jamsesso.jsonlogic.evaluator.expressions;
 
-import jamsesso.jsonlogic.ast.JsonLogicArray;
-import jamsesso.jsonlogic.ast.JsonLogicNode;
-import jamsesso.jsonlogic.ast.JsonLogicNodeType;
 import jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
-import jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
-import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
+import jamsesso.jsonlogic.utils.ArrayLike;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class MergeExpression implements JsonLogicExpression {
+public class MergeExpression implements PreEvaluatedArgumentsExpression {
   public static final MergeExpression INSTANCE = new MergeExpression();
 
   private MergeExpression() {
@@ -24,31 +22,11 @@ public class MergeExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
-    throws JsonLogicEvaluationException {
-    JsonLogicArray[] arrays = new JsonLogicArray[arguments.size()];
-
-    for (int i = 0; i < arguments.size(); i++) {
-      JsonLogicNode node = arguments.get(i);
-
-      if (JsonLogicNodeType.ARRAY.equals(node.getType())) {
-        arrays[i] = (JsonLogicArray) node;
-      }
-      else {
-        arrays[i] = new JsonLogicArray(Collections.singletonList(node));
-      }
-    }
-
-    return evaluator.evaluate(merge(arrays), data);
-  }
-
-  private JsonLogicArray merge(JsonLogicArray... arrays) {
-    List<JsonLogicNode> result = new ArrayList<>();
-
-    for (JsonLogicArray array : arrays) {
-      result.addAll(array);
-    }
-
-    return new JsonLogicArray(result);
+  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+    return ((List<Object>) arguments).stream()
+      .map(obj -> ArrayLike.isEligible(obj) ? new ArrayLike(obj) : Collections.singleton(obj))
+      .map(Collection::stream)
+      .flatMap(Function.identity())
+      .collect(Collectors.toList());
   }
 }

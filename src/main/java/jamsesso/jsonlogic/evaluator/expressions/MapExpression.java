@@ -7,6 +7,7 @@ import jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 import jamsesso.jsonlogic.utils.ArrayLike;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MapExpression implements JsonLogicExpression {
@@ -31,7 +32,7 @@ public class MapExpression implements JsonLogicExpression {
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
     if (!ArrayLike.isEligible(maybeArray)) {
-      throw new JsonLogicEvaluationException("first argument to map must be a valid array");
+      return Collections.emptyList();
     }
 
     List<Object> result = new ArrayList<>();

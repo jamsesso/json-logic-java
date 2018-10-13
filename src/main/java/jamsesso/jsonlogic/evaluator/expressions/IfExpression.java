@@ -25,9 +25,20 @@ public class IfExpression implements JsonLogicExpression {
   @Override
   public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
     throws JsonLogicEvaluationException {
-    // There must be at least 3 arguments
-    if (arguments.size() < 3 || arguments.size() % 2 != 1) {
+    if (arguments.size() < 1) {
       return null;
+    }
+
+    // If there is only a single argument, simply evaluate & return that argument.
+    if (arguments.size() == 1) {
+      return evaluator.evaluate(arguments.get(0), data);
+    }
+
+    // If there is 2 arguments, only evaluate the second argument if the first argument is truthy.
+    if (arguments.size() == 2) {
+      return JsonLogic.truthy(evaluator.evaluate(arguments.get(0), data))
+        ? evaluator.evaluate(arguments.get(1), data)
+        : null;
     }
 
     for (int i = 0; i < arguments.size() - 1; i += 2) {
@@ -37,6 +48,10 @@ public class IfExpression implements JsonLogicExpression {
       if (JsonLogic.truthy(evaluator.evaluate(condition, data))) {
         return evaluator.evaluate(resultIfTrue, data);
       }
+    }
+
+    if ((arguments.size() & 1) == 0) {
+      return null;
     }
 
     return evaluator.evaluate(arguments.get(arguments.size() - 1), data);

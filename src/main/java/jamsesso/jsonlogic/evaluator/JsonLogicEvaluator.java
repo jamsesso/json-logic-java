@@ -42,7 +42,8 @@ public class JsonLogicEvaluator {
     Object key = evaluate(variable.getKey(), data);
 
     if (key == null) {
-      return evaluate(variable.getDefaultValue(), null);
+//      return evaluate(variable.getDefaultValue(), null);
+      return Optional.ofNullable(data).orElse(evaluate(variable.getDefaultValue(), null));
     }
 
     if (key instanceof Number) {

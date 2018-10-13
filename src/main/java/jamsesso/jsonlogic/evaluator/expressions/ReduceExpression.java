@@ -29,13 +29,14 @@ public class ReduceExpression implements JsonLogicExpression {
     }
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
+    Object accumulator = evaluator.evaluate(arguments.get(2), data);
 
     if (!ArrayLike.isEligible(maybeArray)) {
-      throw new JsonLogicEvaluationException("first argument to reduce must be a valid array");
+      return accumulator;
     }
 
     Map<String, Object> context = new HashMap<>();
-    context.put("accumulator", evaluator.evaluate(arguments.get(2), data));
+    context.put("accumulator", accumulator);
 
     for (Object item : new ArrayLike(maybeArray)) {
       context.put("current", item);

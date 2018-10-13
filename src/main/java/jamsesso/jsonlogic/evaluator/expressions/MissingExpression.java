@@ -24,7 +24,7 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
     if (!MapLike.isEligible(data)) {
-      throw new JsonLogicEvaluationException(key() + " only works when the data is a map");
+      return arguments;
     }
 
     if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
@@ -34,8 +34,8 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
 
     Map map = new MapLike(data);
     List options = isSome ? new ArrayLike(arguments.get(1)) : arguments;
-    Set providedKeys = map.keySet();
-    Set requiredKeys = new HashSet<>(options);
+    Set providedKeys = getFlatKeys(map);
+    Set requiredKeys = new LinkedHashSet(options);
 
     requiredKeys.removeAll(providedKeys); // Keys that I need but do not have
 
@@ -44,5 +44,33 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
     }
 
     return new ArrayList<>(requiredKeys);
+  }
+
+  /**
+   * Given a map structure such as:
+   * {a: {b: 1}, c: 2}
+   *
+   * This method will return the following set:
+   * ["a.b", "c"]
+   */
+  private static Set getFlatKeys(Map map) {
+    return getFlatKeys(map, "");
+  }
+
+  private static Set getFlatKeys(Map map, String prefix) {
+    Set keys = new LinkedHashSet();
+
+    for (Object pair : map.entrySet()) {
+      Map.Entry entry = (Map.Entry) pair;
+
+      if (MapLike.isEligible(entry.getValue())) {
+        keys.addAll(getFlatKeys(new MapLike(entry.getValue()), prefix + entry.getKey() + "."));
+      }
+      else {
+        keys.add(prefix + entry.getKey());
+      }
+    }
+
+    return keys;
   }
 }

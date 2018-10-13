@@ -60,11 +60,20 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
     for (int i = 0; i < arguments.size(); i++) {
       Object value = arguments.get(i);
 
-      if (!(value instanceof Number)) {
+      if (value instanceof String) {
+        try {
+          values[i] = Double.parseDouble((String) value);
+        }
+        catch (NumberFormatException e) {
+          return null;
+        }
+      }
+      else if (!(value instanceof Number)) {
         return null;
       }
-
-      values[i] = ((Number) value).doubleValue();
+      else {
+        values[i] = ((Number) value).doubleValue();
+      }
     }
 
     // Reduce the values into a single result

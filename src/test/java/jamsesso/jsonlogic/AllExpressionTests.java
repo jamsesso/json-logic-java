@@ -9,7 +9,7 @@ public class AllExpressionTests {
 
   @Test
   public void testEmptyArray() throws JsonLogicException {
-    assertEquals(true, jsonLogic.apply("{\"all\": [[], {\">\": [{\"var\": \"\"}, 0]}]}", null));
+    assertEquals(false, jsonLogic.apply("{\"all\": [[], {\">\": [{\"var\": \"\"}, 0]}]}", null));
   }
 
   @Test

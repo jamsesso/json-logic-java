@@ -48,13 +48,21 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
       }
 
       startIndex = ((Double) arguments.get(1)).intValue();
-      endIndex = ((Double) arguments.get(2)).intValue() + 1;
 
-      if (endIndex < 0) {
-        endIndex = value.length() + endIndex - 1;
+      if (startIndex < 0) {
+        startIndex = value.length() + startIndex;
       }
 
-      if (startIndex < 0 || startIndex > endIndex || endIndex > value.length()) {
+      endIndex = ((Double) arguments.get(2)).intValue();
+
+      if (endIndex < 0) {
+        endIndex = value.length() + endIndex;
+      }
+      else {
+        endIndex += startIndex;
+      }
+
+      if (startIndex > endIndex || endIndex > value.length()) {
         return "";
       }
     }

@@ -8,9 +8,8 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class FixtureTests {
   private static final List<Fixture> FIXTURES = new ArrayList<>();

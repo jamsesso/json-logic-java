@@ -32,7 +32,13 @@ public class AllExpression implements JsonLogicExpression {
       throw new JsonLogicEvaluationException("first argument to all must be a valid array");
     }
 
-    for (Object item : new ArrayLike(maybeArray)) {
+    ArrayLike array = new ArrayLike(maybeArray);
+
+    if (array.size() < 1) {
+      return false;
+    }
+
+    for (Object item : array) {
       if(!JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item))) {
         return false;
       }
