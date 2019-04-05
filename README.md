@@ -7,16 +7,12 @@ JsonLogic is documented extensively at [JsonLogic.com](http://jsonlogic.com), in
 
 ## Installation
 
-I am currently in the process of making this artifact available in a public repository, but for now, you can download/clone the project and build the jar file using:
-
-```bash
-./gradlew build
-```
-
-To install the jar in your local repository for reference from other local projects, use:
-
-```bash
-./gradlew build install
+```xml
+<dependency>
+  <groupId>io.github.jamsesso</groupId>
+  <artifactId>json-logic-java</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 
 ## Examples

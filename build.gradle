@@ -1,11 +1,11 @@
 plugins {
-  id 'java'
-  id 'maven'
-  id 'maven-publish'
+  id "java"
+  id "maven"
+  id "signing"
 }
 
-group 'io.github.jamsesso'
-version '1.0.0'
+group "io.github.jamsesso"
+version "1.0.1-SNAPSHOT"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -15,7 +15,69 @@ repositories {
 }
 
 dependencies {
-  compile 'com.google.code.gson:gson:2.8.5'
+  compile "com.google.code.gson:gson:2.8.5"
+  testCompile "junit:junit:4.12"
+}
 
-  testCompile 'junit:junit:4.12'
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = "javadoc"
+  from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+  classifier = "sources"
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives jar, javadocJar, sourcesJar
+}
+
+signing {
+  sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      pom.project {
+        name "json-logic-java"
+        artifactId "json-logic-java"
+        packaging "jar"
+        description "A native Java implementation of the json-logic project"
+        url "https://github.com/jamsesso/json-logic-java"
+
+        scm {
+          connection "scm:git@github.com:jamsesso/json-logic-java.git"
+          developerConnection "scm:git@github.com:jamsesso/json-logic-java.git"
+          url "https://github.com/jamsesso/json-logic-java.git"
+        }
+
+        licenses {
+          license {
+            name "MIT License"
+            url "https://github.com/jamsesso/json-logic-java/blob/master/LICENSE"
+          }
+        }
+
+        developers {
+          developer {
+            id "jamsesso"
+            name "Sam Jesso"
+            email "samuel.jesso@gmail.com"
+          }
+        }
+      }
+    }
+  }
 }
