@@ -67,7 +67,7 @@ public final class JsonLogicParser {
       throw new JsonLogicParseException("objects must have exactly 1 key defined, found " + object.keySet().size());
     }
 
-    String key = object.keySet().stream().findAny().get().toLowerCase();
+    String key = object.keySet().stream().findAny().get();
     JsonLogicNode argumentNode = parse(object.get(key));
     JsonLogicArray arguments;
 
