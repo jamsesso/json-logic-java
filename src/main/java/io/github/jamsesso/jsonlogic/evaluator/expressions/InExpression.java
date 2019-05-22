@@ -4,7 +4,6 @@ import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class InExpression implements PreEvaluatedArgumentsExpression {
   public static final InExpression INSTANCE = new InExpression();
@@ -30,15 +29,7 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
     }
 
     if (ArrayLike.isEligible(arguments.get(1))) {
-      return new ArrayLike(arguments.get(1)).stream()
-              .map(value -> {
-                if (value instanceof Integer) {
-                  return ((Integer) value).doubleValue();
-                }
-                return value;
-              })
-              .collect(Collectors.toList())
-              .contains(arguments.get(0));
+      return new ArrayLike(arguments.get(1)).contains(arguments.get(0));
     }
 
     throw new JsonLogicEvaluationException("in expects the second argument to be either a string or array");

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ArrayLike implements List<Object> {
   private final List<Object> delegate;
@@ -11,13 +12,16 @@ public class ArrayLike implements List<Object> {
   @SuppressWarnings("unchecked")
   public ArrayLike(Object data) {
     if (data instanceof List) {
-      delegate = (List) data;
+      delegate = ((List<Object>) data)
+              .stream()
+              .map(this::transform)
+              .collect(Collectors.toList());
     }
     else if (data != null && data.getClass().isArray()) {
       delegate = new ArrayList<>();
 
       for (int i = 0; i < Array.getLength(data); i++) {
-        delegate.add(i, Array.get(data, i));
+        delegate.add(i, transform(Array.get(data, i)));
       }
     }
     else if (data instanceof JsonArray) {
@@ -27,7 +31,7 @@ public class ArrayLike implements List<Object> {
       delegate = new ArrayList<>();
 
       for (Object item : (Iterable) data) {
-        delegate.add(item);
+        delegate.add(transform(item));
       }
     }
     else {
@@ -185,7 +189,15 @@ public class ArrayLike implements List<Object> {
     return false;
   }
 
+  public Object transform(Object value) {
+    if (value instanceof Integer) {
+      return ((Integer) value).doubleValue();
+    }
+
+    return value;
+  }
+
   public static boolean isEligible(Object data) {
-    return data != null && (data instanceof List || data instanceof Iterable || data.getClass().isArray());
+    return data != null && (data instanceof Iterable || data.getClass().isArray());
   }
 }

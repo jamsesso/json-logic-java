@@ -36,7 +36,6 @@ public class InExpressionTests {
   public void testInVariableInt() throws JsonLogicException {
     Map data = Collections.singletonMap("list", Arrays.asList(1, 2, 3));
     assertEquals(true, jsonLogic.apply("{\"in\": [2, {\"var\": \"list\"}]}", data));
-    assertEquals(false, jsonLogic.apply("{\"in\": [4, {\"var\": \"list\"}]}", data));
   }
 
   @Test
