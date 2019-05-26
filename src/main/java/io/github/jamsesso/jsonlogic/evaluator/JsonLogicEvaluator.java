@@ -42,7 +42,9 @@ public class JsonLogicEvaluator {
     Object key = evaluate(variable.getKey(), data);
 
     if (key == null) {
-      return Optional.ofNullable(data).orElse(evaluate(variable.getDefaultValue(), null));
+      return Optional.of(data)
+        .map(this::transform)
+        .orElse(evaluate(variable.getDefaultValue(), null));
     }
 
     if (key instanceof Number) {
@@ -52,7 +54,7 @@ public class JsonLogicEvaluator {
         ArrayLike list = new ArrayLike(data);
 
         if (index >= 0 && index < list.size()) {
-          return list.get(index);
+          return transform(list.get(index));
         }
       }
 
@@ -100,11 +102,11 @@ public class JsonLogicEvaluator {
         return null;
       }
 
-      return list.get(index);
+      return transform(list.get(index));
     }
 
     if (data instanceof Map) {
-      return ((Map) data).get(key);
+      return transform(((Map) data).get(key));
     }
 
     return null;
@@ -128,5 +130,13 @@ public class JsonLogicEvaluator {
     }
 
     return handler.evaluate(this, operation.getArguments(), data);
+  }
+
+  private Object transform(Object value) {
+    if (value instanceof Integer) {
+      return ((Integer) value).doubleValue();
+    }
+
+    return value;
   }
 }
