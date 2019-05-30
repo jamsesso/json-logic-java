@@ -71,8 +71,8 @@ public class VariableTests {
     }};
 
     assertEquals("John", jsonLogic.apply("{\"var\": \"users.0.name\"}", data));
-    assertEquals(1337, jsonLogic.apply("{\"var\": \"users.0.followers\"}", data));
+    assertEquals(1337.0, jsonLogic.apply("{\"var\": \"users.0.followers\"}", data));
     assertEquals("Jane", jsonLogic.apply("{\"var\": \"users.1.name\"}", data));
-    assertEquals(2048, jsonLogic.apply("{\"var\": \"users.1.followers\"}", data));
+    assertEquals(2048.0, jsonLogic.apply("{\"var\": \"users.1.followers\"}", data));
   }
 }

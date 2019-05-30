@@ -19,8 +19,8 @@ public class FilterExpressionTests {
     Object result = jsonLogic.apply(json, data);
 
     assertEquals(3, ((List) result).size());
-    assertEquals(2, ((List) result).get(0));
-    assertEquals(4, ((List) result).get(1));
-    assertEquals(6, ((List) result).get(2));
+    assertEquals(2.0, ((List) result).get(0));
+    assertEquals(4.0, ((List) result).get(1));
+    assertEquals(6.0, ((List) result).get(2));
   }
 }

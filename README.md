@@ -32,7 +32,7 @@ data.put("x", 10);
 
 // Evaluate the result.
 double result = (double) jsonLogic.apply(expression, data);
-assert result == 20;
+assert result == 20.0;
 ```
 
 You can add your own operations like so:
