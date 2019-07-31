@@ -21,4 +21,9 @@ public class EqualityExpressionTests {
   public void testDifferentValueDifferentType() throws JsonLogicException {
     assertEquals(true, jsonLogic.apply("{\"==\": [[], false]}", null));
   }
+
+  @Test
+  public void testEmptyStringAndZeroComparison() throws JsonLogicException {
+    assertEquals(true, jsonLogic.apply("{\"==\": [\" \", 0]}", null));
+  }
 }
