@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class InExpressionTests {
   private static final JsonLogic jsonLogic = new JsonLogic();
@@ -54,5 +55,15 @@ public class InExpressionTests {
     }).collect(Collectors.toMap(o -> o[0], o -> o[1]));
 
     assertEquals(true, jsonLogic.apply("{\"in\": [{\"var\": \"value\"}, {\"var\": \"list\"}]}", data));
+  }
+
+  @Test
+  public void testSingleArgument() throws JsonLogicException {
+    assertFalse((boolean) jsonLogic.apply("{\"in\": [\"Spring\"]}", null));
+  }
+
+  @Test
+  public void testBadSecondArgument() throws JsonLogicException {
+    assertFalse((boolean) jsonLogic.apply("{\"in\": [\"Spring\", 3]}", null));
   }
 }
