@@ -100,6 +100,28 @@ public final class JsonLogic {
     }
 
     if (value instanceof Number) {
+      if (value instanceof Double) {
+        Double d = (Double) value;
+
+        if (d.isNaN()) {
+          return false;
+        }
+        else if (d.isInfinite()) {
+          return true;
+        }
+      }
+
+      if (value instanceof Float) {
+        Float f = (Float) value;
+
+        if (f.isNaN()) {
+          return false;
+        }
+        else if (f.isInfinite()) {
+          return true;
+        }
+      }
+
       return ((Number) value).doubleValue() != 0.0;
     }
 

@@ -20,7 +20,7 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
     if (arguments.size() < 2) {
-      throw new JsonLogicEvaluationException("in expects exactly 2 arguments");
+      return false;
     }
 
     // Handle string in (substring)
@@ -32,6 +32,6 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
       return new ArrayLike(arguments.get(1)).contains(arguments.get(0));
     }
 
-    throw new JsonLogicEvaluationException("in expects the second argument to be either a string or array");
+    return false;
   }
 }

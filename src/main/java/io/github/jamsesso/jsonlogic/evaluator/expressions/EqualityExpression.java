@@ -82,6 +82,10 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
 
   private boolean compareNumberToString(Number left, String right) {
     try {
+      if (right.trim().isEmpty()) {
+        right = "0";
+      }
+
       return Double.parseDouble(right) == left.doubleValue();
     }
     catch (NumberFormatException e) {

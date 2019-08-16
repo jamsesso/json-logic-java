@@ -102,4 +102,9 @@ public class MathExpressionTests {
 
     assertEquals(3.0, result);
   }
+
+  @Test
+  public void testDivideSingleNumber() throws JsonLogicException {
+    assertEquals(null, jsonLogic.apply("{\"/\": [0]}", null));
+  }
 }

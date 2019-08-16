@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class MathExpression implements PreEvaluatedArgumentsExpression {
-  public static final MathExpression ADD = new MathExpression("+", (a, b) -> a + b);
+  public static final MathExpression ADD = new MathExpression("+", Double::sum);
   public static final MathExpression SUBTRACT = new MathExpression("-", (a, b) -> a - b, 2);
   public static final MathExpression MULTIPLY = new MathExpression("*", (a, b) -> a * b);
   public static final MathExpression DIVIDE = new MathExpression("/", (a, b) -> a / b, 2);
@@ -51,6 +51,10 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
 
       if (key.equals("-") && arguments.get(0) instanceof Number) {
         return -1 * ((Number) arguments.get(0)).doubleValue();
+      }
+
+      if (key.equals("/")) {
+        return null;
       }
     }
 

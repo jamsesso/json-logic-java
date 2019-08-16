@@ -34,5 +34,13 @@ public class TruthyTests {
 
     // Null
     assertFalse(JsonLogic.truthy(null));
+
+    // NaN and Infinity
+    assertFalse(JsonLogic.truthy(Double.NaN));
+    assertFalse(JsonLogic.truthy(Float.NaN));
+    assertTrue(JsonLogic.truthy(Double.POSITIVE_INFINITY));
+    assertTrue(JsonLogic.truthy(Double.NEGATIVE_INFINITY));
+    assertTrue(JsonLogic.truthy(Float.POSITIVE_INFINITY));
+    assertTrue(JsonLogic.truthy(Float.NEGATIVE_INFINITY));
   }
 }
