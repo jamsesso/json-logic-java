@@ -9,6 +9,7 @@ import java.util.Map;
 public class NumberTests {
   @Test
   public void testConvertAllNumericInputToDouble() throws JsonLogicException {
+    JsonLogic jsonLogic = new JsonLogic();
     Map<String, Number> numbers = new HashMap<String, Number>() {{
       put("double", 1D);
       put("float", 1F);
@@ -17,13 +18,10 @@ public class NumberTests {
       put("long", 1L);
     }};
 
-    JsonLogic jsonLogic = new JsonLogic();
-    jsonLogic.addOperation("echo", args -> args[0]);
-
-    Assert.assertEquals(1D, jsonLogic.apply("{\"echo\": [{\"var\": \"double\"}]}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"echo\": [{\"var\": \"float\"}]}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"echo\": [{\"var\": \"int\"}]}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"echo\": [{\"var\": \"short\"}]}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"echo\": [{\"var\": \"long\"}]}", numbers));
+    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"double\"}", numbers));
+    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"float\"}", numbers));
+    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"int\"}", numbers));
+    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"short\"}", numbers));
+    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"long\"}", numbers));
   }
 }
