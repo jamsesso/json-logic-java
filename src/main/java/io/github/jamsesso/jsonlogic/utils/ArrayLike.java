@@ -1,6 +1,7 @@
 package io.github.jamsesso.jsonlogic.utils;
 
 import com.google.gson.JsonArray;
+import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -14,14 +15,14 @@ public class ArrayLike implements List<Object> {
     if (data instanceof List) {
       delegate = ((List<Object>) data)
               .stream()
-              .map(this::transform)
+              .map(JsonLogicEvaluator::transform)
               .collect(Collectors.toList());
     }
     else if (data != null && data.getClass().isArray()) {
       delegate = new ArrayList<>();
 
       for (int i = 0; i < Array.getLength(data); i++) {
-        delegate.add(i, transform(Array.get(data, i)));
+        delegate.add(i, JsonLogicEvaluator.transform(Array.get(data, i)));
       }
     }
     else if (data instanceof JsonArray) {
@@ -31,7 +32,7 @@ public class ArrayLike implements List<Object> {
       delegate = new ArrayList<>();
 
       for (Object item : (Iterable) data) {
-        delegate.add(transform(item));
+        delegate.add(JsonLogicEvaluator.transform(item));
       }
     }
     else {
@@ -187,14 +188,6 @@ public class ArrayLike implements List<Object> {
     }
 
     return false;
-  }
-
-  public Object transform(Object value) {
-    if (value instanceof Integer) {
-      return ((Integer) value).doubleValue();
-    }
-
-    return value;
   }
 
   public static boolean isEligible(Object data) {

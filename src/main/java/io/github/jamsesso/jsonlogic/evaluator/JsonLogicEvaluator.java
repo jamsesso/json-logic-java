@@ -25,7 +25,7 @@ public class JsonLogicEvaluator {
 
   public Object evaluate(JsonLogicPrimitive<?> primitive) {
     switch (primitive.getPrimitiveType()) {
-      case NUMBER: return ((JsonLogicNumber) primitive).getValue().doubleValue();
+      case NUMBER: return ((JsonLogicNumber) primitive).getValue();
 
       default:
         return primitive.getValue();
@@ -43,7 +43,7 @@ public class JsonLogicEvaluator {
 
     if (key == null) {
       return Optional.of(data)
-        .map(this::transform)
+        .map(JsonLogicEvaluator::transform)
         .orElse(evaluate(variable.getDefaultValue(), null));
     }
 
@@ -132,9 +132,9 @@ public class JsonLogicEvaluator {
     return handler.evaluate(this, operation.getArguments(), data);
   }
 
-  private Object transform(Object value) {
-    if (value instanceof Integer) {
-      return ((Integer) value).doubleValue();
+  public static Object transform(Object value) {
+    if (value instanceof Number) {
+      return ((Number) value).doubleValue();
     }
 
     return value;
