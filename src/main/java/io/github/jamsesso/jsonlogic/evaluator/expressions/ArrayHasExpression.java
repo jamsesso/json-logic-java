@@ -31,6 +31,15 @@ public class ArrayHasExpression implements JsonLogicExpression {
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
+    // Array objects can have null values according to http://jsonlogic.com/
+    if (maybeArray == null) {
+      if (isSome) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     if (!ArrayLike.isEligible(maybeArray)) {
       throw new JsonLogicEvaluationException("first argument to some must be a valid array");
     }
