@@ -29,7 +29,11 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
     }
 
     if (ArrayLike.isEligible(arguments.get(1))) {
-      return new ArrayLike(arguments.get(1)).contains(arguments.get(0));
+      if (ArrayLike.isEligible(arguments.get(0))) {
+        return new ArrayLike(arguments.get(1)).containsAll(new ArrayLike(arguments.get(0)));
+      } else {
+        return new ArrayLike(arguments.get(1)).contains(arguments.get(0));
+      }
     }
 
     return false;
