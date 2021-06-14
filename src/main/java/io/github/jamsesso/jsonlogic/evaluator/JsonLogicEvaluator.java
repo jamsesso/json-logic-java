@@ -98,7 +98,7 @@ public class JsonLogicEvaluator {
         throw new JsonLogicEvaluationException(e);
       }
 
-      if (index < 0 || index > list.size()) {
+      if (index < 0 || index >= list.size()) {
         return null;
       }
 

@@ -45,6 +45,18 @@ public class VariableTests {
 
     assertEquals("hello", jsonLogic.apply("{\"var\": 0}", data));
     assertEquals("world", jsonLogic.apply("{\"var\": 1}", data));
+    assertNull(jsonLogic.apply("{\"var\": 2}", data));
+    assertNull(jsonLogic.apply("{\"var\": 3}", data));
+  }
+
+  @Test
+  public void testArrayAccessWithStringKeys() throws JsonLogicException {
+    String[] data = new String[] {"hello", "world"};
+
+    assertEquals("hello", jsonLogic.apply("{\"var\": \"0\"}", data));
+    assertEquals("world", jsonLogic.apply("{\"var\": \"1\"}", data));
+    assertNull(jsonLogic.apply("{\"var\": \"2\"}", data));
+    assertNull(jsonLogic.apply("{\"var\": \"3\"}", data));
   }
 
   @Test
@@ -53,6 +65,18 @@ public class VariableTests {
 
     assertEquals("hello", jsonLogic.apply("{\"var\": 0}", data));
     assertEquals("world", jsonLogic.apply("{\"var\": 1}", data));
+    assertNull(jsonLogic.apply("{\"var\": 2}", data));
+    assertNull(jsonLogic.apply("{\"var\": 3}", data));
+  }
+
+  @Test
+  public void testListAccessWithStringKeys() throws JsonLogicException {
+    List<String> data = Arrays.asList("hello", "world");
+
+    assertEquals("hello", jsonLogic.apply("{\"var\": \"0\"}", data));
+    assertEquals("world", jsonLogic.apply("{\"var\": \"1\"}", data));
+    assertNull(jsonLogic.apply("{\"var\": \"2\"}", data));
+    assertNull(jsonLogic.apply("{\"var\": \"3\"}", data));
   }
 
   @Test
