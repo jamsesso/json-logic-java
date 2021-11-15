@@ -2,6 +2,8 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class NumericComparisonExpression implements PreEvaluatedArgumentsExpression {
@@ -36,16 +38,26 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
       Object value = arguments.get(i);
 
       if (value instanceof String) {
-        try {
-          values[i] = Double.parseDouble((String) value);
+
+        try
+        {
+          values[i] = (double) Instant.parse((String) value).getEpochSecond();
         }
-        catch (NumberFormatException e) {
-          return false;
+        catch (DateTimeParseException e)
+        {
+          try
+          {
+            values[i] = Double.parseDouble((String) value);
+          }
+          catch (NumberFormatException ex) {
+            return false;
+          }
         }
       }
       else if (!(value instanceof Number)) {
         return false;
       }
+
       else {
         values[i] = ((Number) value).doubleValue();
       }

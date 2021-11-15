@@ -3,6 +3,8 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 import io.github.jamsesso.jsonlogic.JsonLogic;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class EqualityExpression implements PreEvaluatedArgumentsExpression {
@@ -49,9 +51,19 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
       return compareNumberToBoolean((Number) left, (Boolean) right);
     }
 
-    // Check string loose equality
+
     if (left instanceof String && right instanceof String) {
-      return left.equals(right);
+      try
+      {
+        Double leftDouble = (double) Instant.parse((String) left).getEpochSecond();
+        Double rightDouble = (double) Instant.parse((String) right).getEpochSecond();
+        return leftDouble.equals(rightDouble);
+      }
+      catch (DateTimeParseException e)
+      {
+        // Check string loose equality
+        return left.equals(right);
+      }
     }
 
     if (left instanceof String && right instanceof Number) {
