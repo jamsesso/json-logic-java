@@ -23,13 +23,19 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
 
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
-    if (!MapLike.isEligible(data)) {
-      return arguments;
-    }
-
     if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
       throw new JsonLogicEvaluationException("missing_some expects first argument to be an integer and the second " +
-                                             "argument to be an array");
+              "argument to be an array");
+    }
+
+    if (!MapLike.isEligible(data)) {
+      if (isSome) {
+        if (((Double) arguments.get(0)).intValue() <= 0) {
+          return Collections.EMPTY_LIST;
+        }
+        return arguments.get(1);
+      }
+      return arguments;
     }
 
     Map map = new MapLike(data);
