@@ -22,17 +22,20 @@ public class InExpressionTests {
   @Test
   public void testStringNotIn() throws JsonLogicException {
     assertEquals(false, jsonLogic.apply("{\"in\": [\"race\", \"clouds\"]}", null));
+    assertEquals(false, jsonLogic.apply("{\"in\": [null, \"clouds\"]}", null));
   }
 
   @Test
   public void testArrayIn() throws JsonLogicException {
     assertEquals(true, jsonLogic.apply("{\"in\": [1, [1, 2, 3]]}", null));
     assertEquals(true, jsonLogic.apply("{\"in\": [4.56, [1, 2, 3, 4.56]]}", null));
+    assertEquals(true, jsonLogic.apply("{\"in\": [null, [1, 2, 3, null]]}", null));
   }
 
   @Test
   public void testArrayNotIn() throws JsonLogicException {
     assertEquals(false, jsonLogic.apply("{\"in\": [5, [1, 2, 3]]}", null));
+    assertEquals(false, jsonLogic.apply("{\"in\": [null, [1, 2, 3]]}", null));
   }
 
   @Test
@@ -45,6 +48,7 @@ public class InExpressionTests {
   public void testNotInVariableInt() throws JsonLogicException {
     Map data = Collections.singletonMap("list", Arrays.asList(1, 2, 3));
     assertEquals(false, jsonLogic.apply("{\"in\": [4, {\"var\": \"list\"}]}", data));
+    assertEquals(false, jsonLogic.apply("{\"in\": [4, {\"var\": \"list\"}]}", null));
   }
 
   @Test
@@ -55,6 +59,7 @@ public class InExpressionTests {
     }).collect(Collectors.toMap(o -> o[0], o -> o[1]));
 
     assertEquals(true, jsonLogic.apply("{\"in\": [{\"var\": \"value\"}, {\"var\": \"list\"}]}", data));
+    assertEquals(false, jsonLogic.apply("{\"in\": [{\"var\": \"value\"}, {\"var\": \"list\"}]}", null));
   }
 
   @Test

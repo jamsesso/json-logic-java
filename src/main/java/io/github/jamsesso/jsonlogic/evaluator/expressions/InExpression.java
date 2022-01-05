@@ -25,6 +25,9 @@ public class InExpression implements PreEvaluatedArgumentsExpression {
 
     // Handle string in (substring)
     if (arguments.get(1) instanceof String) {
+      if (arguments.get(0) == null) {
+        return false;
+      }
       return ((String) arguments.get(1)).contains(arguments.get(0).toString());
     }
 
