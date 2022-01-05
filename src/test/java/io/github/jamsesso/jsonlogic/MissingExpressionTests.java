@@ -64,4 +64,21 @@ public class MissingExpressionTests {
 
     assertEquals("We require first name, last name, and one phone number.", result);
   }
+
+  @Test
+  public void testMissingSomeWithNullData() throws JsonLogicException {
+    Object result = jsonLogic.apply("{\"missing_some\": [2, [\"a\", \"b\", \"c\"]]}", null);
+
+    assertEquals(3, ((List) result).size());
+    assertEquals("a", ((List) result).get(0));
+    assertEquals("b", ((List) result).get(1));
+    assertEquals("c", ((List) result).get(2));
+  }
+
+  @Test
+  public void testMissingSomeWithZeroThreshold() throws JsonLogicException {
+    Object result = jsonLogic.apply("{\"missing_some\": [0, [\"a\", \"b\", \"c\"]]}", null);
+
+    assertEquals(0, ((List) result).size());
+  }
 }
