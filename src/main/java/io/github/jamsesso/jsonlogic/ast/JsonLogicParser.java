@@ -22,7 +22,7 @@ public final class JsonLogicParser {
     }
   }
 
-  private static JsonLogicNode parse(JsonElement root) throws JsonLogicParseException {
+  public static JsonLogicNode parse(JsonElement root) throws JsonLogicParseException {
     // Handle null
     if (root.isJsonNull()) {
       return JsonLogicNull.NULL;
