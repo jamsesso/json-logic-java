@@ -80,10 +80,12 @@ public final class JsonLogic {
 
     return this;
   }
-
   public JsonLogic addCache(JsonLogicCache cache) {
     parseCache = cache;
     return this;
+  }
+  public List<JsonLogicExpression> getExpressions() {
+    return expressions;
   }
 
   public Object apply(String json, Object data) throws JsonLogicException {
