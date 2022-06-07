@@ -2,6 +2,8 @@ package io.github.jamsesso.jsonlogic;
 
 import io.github.jamsesso.jsonlogic.ast.JsonLogicNode;
 import io.github.jamsesso.jsonlogic.ast.JsonLogicParser;
+import io.github.jamsesso.jsonlogic.cache.ConcurrentHashMapCache;
+import io.github.jamsesso.jsonlogic.cache.JsonLogicCache;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
@@ -13,12 +15,13 @@ import java.util.function.Function;
 
 public final class JsonLogic {
   private final List<JsonLogicExpression> expressions;
-  private final Map<String, JsonLogicNode> parseCache;
+  private JsonLogicCache parseCache;
   private JsonLogicEvaluator evaluator;
 
   public JsonLogic() {
     this.expressions = new ArrayList<>();
-    this.parseCache = new ConcurrentHashMap<>();
+
+    addCache(new ConcurrentHashMapCache());
 
     // Add default operations
     addOperation(MathExpression.ADD);
@@ -78,16 +81,26 @@ public final class JsonLogic {
     return this;
   }
 
+  public JsonLogic addCache(JsonLogicCache cache) {
+    parseCache = cache;
+    return this;
+  }
+
   public Object apply(String json, Object data) throws JsonLogicException {
-    if (!parseCache.containsKey(json)) {
-      parseCache.put(json, JsonLogicParser.parse(json));
+    JsonLogicNode ast;
+
+    if (parseCache.containsKey(json)) {
+      ast = parseCache.get(json);
+    } else {
+      ast = JsonLogicParser.parse(json);
+      parseCache.put(json, ast);
     }
 
     if (evaluator == null) {
       evaluator = new JsonLogicEvaluator(expressions);
     }
 
-    return evaluator.evaluate(parseCache.get(json), data);
+    return evaluator.evaluate(ast, data);
   }
 
   public static boolean truthy(Object value) {
