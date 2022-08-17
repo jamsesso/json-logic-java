@@ -1,15 +1,17 @@
 package io.github.jamsesso.jsonlogic.ast;
 
-public class JsonLogicNumber implements JsonLogicPrimitive<Double> {
-  private final Number value;
+import java.math.BigDecimal;
 
-  public JsonLogicNumber(Number value) {
+public class JsonLogicNumber implements JsonLogicPrimitive<BigDecimal> {
+  private final BigDecimal value;
+
+  public JsonLogicNumber(BigDecimal value) {
     this.value = value;
   }
 
   @Override
-  public Double getValue() {
-    return value.doubleValue();
+  public BigDecimal getValue() {
+    return value;
   }
 
   @Override

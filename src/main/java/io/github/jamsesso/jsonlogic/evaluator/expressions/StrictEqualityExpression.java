@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class StrictEqualityExpression implements PreEvaluatedArgumentsExpression {
@@ -25,8 +26,8 @@ public class StrictEqualityExpression implements PreEvaluatedArgumentsExpression
     Object left = arguments.get(0);
     Object right = arguments.get(1);
 
-    if (left instanceof Number && right instanceof Number) {
-      return ((Number) left).doubleValue() == ((Number) right).doubleValue();
+    if (left instanceof BigDecimal && right instanceof BigDecimal) {
+      return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
     }
 
     if (left == right) {

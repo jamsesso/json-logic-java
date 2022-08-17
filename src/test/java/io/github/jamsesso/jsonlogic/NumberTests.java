@@ -3,6 +3,7 @@ package io.github.jamsesso.jsonlogic;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +19,15 @@ public class NumberTests {
       put("long", 1L);
     }};
 
-    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"double\"}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"float\"}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"int\"}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"short\"}", numbers));
-    Assert.assertEquals(1D, jsonLogic.apply("{\"var\": \"long\"}", numbers));
+    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"double\"}", numbers))
+            .compareTo(BigDecimal.valueOf(1)));
+    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"float\"}", numbers))
+            .compareTo(BigDecimal.valueOf(1)));
+    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"int\"}", numbers))
+            .compareTo(BigDecimal.valueOf(1)));
+    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"short\"}", numbers))
+            .compareTo(BigDecimal.valueOf(1)));
+    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"long\"}", numbers))
+            .compareTo(BigDecimal.valueOf(1)));
   }
 }

@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class SubstringExpression implements PreEvaluatedArgumentsExpression {
@@ -22,7 +23,7 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
       throw new JsonLogicEvaluationException("substr expects 2 or 3 arguments");
     }
 
-    if (!(arguments.get(1) instanceof Double)) {
+    if (!(arguments.get(1) instanceof BigDecimal)) {
       throw new JsonLogicEvaluationException("first argument to substr must be a number");
     }
 
@@ -31,7 +32,7 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
     int endIndex;
 
     if (arguments.size() == 2) {
-      startIndex = ((Double) arguments.get(1)).intValue();
+      startIndex = ((BigDecimal) arguments.get(1)).intValue();
       endIndex = value.length();
 
       if (startIndex < 0) {
@@ -43,17 +44,17 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
       }
     }
     else {
-      if (!(arguments.get(2) instanceof Double)) {
+      if (!(arguments.get(2) instanceof BigDecimal)) {
         throw new JsonLogicEvaluationException("second argument to substr must be an integer");
       }
 
-      startIndex = ((Double) arguments.get(1)).intValue();
+      startIndex = ((BigDecimal) arguments.get(1)).intValue();
 
       if (startIndex < 0) {
         startIndex = value.length() + startIndex;
       }
 
-      endIndex = ((Double) arguments.get(2)).intValue();
+      endIndex = ((BigDecimal) arguments.get(2)).intValue();
 
       if (endIndex < 0) {
         endIndex = value.length() + endIndex;

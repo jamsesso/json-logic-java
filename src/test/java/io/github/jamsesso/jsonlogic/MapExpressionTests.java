@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -15,12 +16,12 @@ public class MapExpressionTests {
                   "  {\"var\": \"\"},\n" +
                   "  {\"*\": [{\"var\": \"\"}, 2]}\n" +
                   "]}";
-    int[] data = new int[] {1, 2, 3};
-    Object result = jsonLogic.apply(json, data);
+    BigDecimal[] data = new BigDecimal[] {BigDecimal.ONE, BigDecimal.valueOf(2), BigDecimal.valueOf(3)};
+    List<BigDecimal> result = (List) jsonLogic.apply(json, data);
 
-    assertEquals(3, ((List) result).size());
-    assertEquals(2.0, ((List) result).get(0));
-    assertEquals(4.0, ((List) result).get(1));
-    assertEquals(6.0, ((List) result).get(2));
+    assertEquals(3, result.size());
+    assertEquals(0, result.get(0).compareTo(new BigDecimal("2.0")));
+    assertEquals(0, result.get(1).compareTo(new BigDecimal("4.0")));
+    assertEquals(0, result.get(2).compareTo(new BigDecimal("6.0")));
   }
 }

@@ -37,7 +37,7 @@ public final class JsonLogicParser {
       }
 
       if (primitive.isNumber()) {
-        return new JsonLogicNumber(primitive.getAsNumber());
+        return new JsonLogicNumber(primitive.getAsBigDecimal());
       }
 
       if (primitive.isBoolean() && primitive.getAsBoolean()) {

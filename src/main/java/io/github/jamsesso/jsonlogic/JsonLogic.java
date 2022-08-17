@@ -7,8 +7,8 @@ import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public final class JsonLogic {
@@ -100,6 +100,10 @@ public final class JsonLogic {
     }
 
     if (value instanceof Number) {
+      if (value instanceof BigDecimal) {
+        return ((BigDecimal) value).compareTo(BigDecimal.ZERO) != 0;
+      }
+
       if (value instanceof Double) {
         Double d = (Double) value;
 

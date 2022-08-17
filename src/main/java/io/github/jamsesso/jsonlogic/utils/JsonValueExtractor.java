@@ -42,7 +42,7 @@ public final class JsonValueExtractor {
         return primitive.getAsBoolean();
       }
       else if (primitive.isNumber()) {
-        return primitive.getAsNumber().doubleValue();
+        return primitive.getAsBigDecimal();
       }
       else {
         return primitive.getAsString();

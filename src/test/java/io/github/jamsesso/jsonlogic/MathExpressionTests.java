@@ -2,7 +2,9 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MathExpressionTests {
   private static final JsonLogic jsonLogic = new JsonLogic();
@@ -12,7 +14,7 @@ public class MathExpressionTests {
     String json = "{\"+\":[4,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(6.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(6)));
   }
 
   @Test
@@ -20,7 +22,7 @@ public class MathExpressionTests {
     String json = "{\"+\":[2,2,2,2,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(10.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(10)));
   }
 
   @Test
@@ -28,7 +30,7 @@ public class MathExpressionTests {
     String json = "{\"+\" : \"3.14\"}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(3.14, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(3.14)));
   }
 
   @Test
@@ -36,7 +38,7 @@ public class MathExpressionTests {
     String json = "{\"-\":[4,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(2.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(2)));
   }
 
   @Test
@@ -44,7 +46,7 @@ public class MathExpressionTests {
     String json = "{\"-\": 2 }";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(-2.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(-2)));
   }
 
   @Test
@@ -52,7 +54,7 @@ public class MathExpressionTests {
     String json = "{\"*\":[4,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(8.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(8)));
   }
 
   @Test
@@ -60,7 +62,7 @@ public class MathExpressionTests {
     String json = "{\"*\":[2,2,2,2,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(32.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(32)));
   }
 
   @Test
@@ -68,15 +70,14 @@ public class MathExpressionTests {
     String json = "{\"/\":[4,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(2.0, result);
+
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(2)));
   }
 
-  @Test
+  @Test(expected = ArithmeticException.class)
   public void testDivideBy0() throws JsonLogicException {
     String json = "{\"/\":[4,0]}";
-    Object result = jsonLogic.apply(json, null);
-
-    assertEquals(Double.POSITIVE_INFINITY, result);
+    jsonLogic.apply(json, null);
   }
 
   @Test
@@ -84,7 +85,7 @@ public class MathExpressionTests {
     String json = "{\"%\": [101,2]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(1.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(1)));
   }
 
   @Test
@@ -92,7 +93,7 @@ public class MathExpressionTests {
     String json = "{\"min\":[1,2,3]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(1.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(1)));
   }
 
   @Test
@@ -100,11 +101,11 @@ public class MathExpressionTests {
     String json = "{\"max\":[1,2,3]}";
     Object result = jsonLogic.apply(json, null);
 
-    assertEquals(3.0, result);
+    assertEquals(0, ((BigDecimal) result).compareTo(BigDecimal.valueOf(3)));
   }
 
   @Test
   public void testDivideSingleNumber() throws JsonLogicException {
-    assertEquals(null, jsonLogic.apply("{\"/\": [0]}", null));
+    assertNull(jsonLogic.apply("{\"/\": [0]}", null));
   }
 }

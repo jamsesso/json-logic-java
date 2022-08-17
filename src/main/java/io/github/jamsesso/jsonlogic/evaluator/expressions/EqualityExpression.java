@@ -2,7 +2,9 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 
 import io.github.jamsesso.jsonlogic.JsonLogic;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
+import io.github.jamsesso.jsonlogic.utils.BigDecimalOperations;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class EqualityExpression implements PreEvaluatedArgumentsExpression {
@@ -38,7 +40,8 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
 
     // Check numeric loose equality
     if (left instanceof Number && right instanceof Number) {
-      return Double.valueOf(((Number) left).doubleValue()).equals(((Number) right).doubleValue());
+      return BigDecimalOperations.fromNumber((Number) left)
+              .equals(BigDecimalOperations.fromNumber((Number) right));
     }
 
     if (left instanceof Number && right instanceof String) {
@@ -86,7 +89,7 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
         right = "0";
       }
 
-      return Double.parseDouble(right) == left.doubleValue();
+      return new BigDecimal(right).compareTo(BigDecimalOperations.fromNumber(left)) == 0;
     }
     catch (NumberFormatException e) {
       return false;
@@ -95,10 +98,10 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
 
   private boolean compareNumberToBoolean(Number left, Boolean right) {
     if (right) {
-      return left.doubleValue() == 1.0;
+      return BigDecimalOperations.fromNumber(left).equals(BigDecimal.ONE);
     }
 
-    return left.doubleValue() == 0.0;
+    return BigDecimalOperations.fromNumber(left).equals(BigDecimal.ZERO);
   }
 
   private boolean compareStringToBoolean(String left, Boolean right) {
