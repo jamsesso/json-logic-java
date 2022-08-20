@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
@@ -31,6 +32,10 @@ public class TruthyTests {
     // Any non-empty string
     assertTrue(JsonLogic.truthy("hello world"));
     assertTrue(JsonLogic.truthy("0"));
+
+    //BigDecimal
+    assertTrue(JsonLogic.truthy(new BigDecimal("1")));
+    assertFalse(JsonLogic.truthy(new BigDecimal("0")));
 
     // Null
     assertFalse(JsonLogic.truthy(null));

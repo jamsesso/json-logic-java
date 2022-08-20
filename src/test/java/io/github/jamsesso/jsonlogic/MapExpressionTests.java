@@ -16,12 +16,27 @@ public class MapExpressionTests {
                   "  {\"var\": \"\"},\n" +
                   "  {\"*\": [{\"var\": \"\"}, 2]}\n" +
                   "]}";
+    int[] data = new int[] {1, 2, 3};
+    List<BigDecimal> result = (List) jsonLogic.apply(json, data);
+
+    assertEquals(3, result.size());
+    assertEquals("2", result.get(0).toPlainString());
+    assertEquals("4", result.get(1).toPlainString());
+    assertEquals("6", result.get(2).toPlainString());
+  }
+
+  @Test
+  public void testMapWIthBigDecimal() throws JsonLogicException {
+    String json = "{\"map\": [\n" +
+            "  {\"var\": \"\"},\n" +
+            "  {\"*\": [{\"var\": \"\"}, 2]}\n" +
+            "]}";
     BigDecimal[] data = new BigDecimal[] {BigDecimal.ONE, BigDecimal.valueOf(2), BigDecimal.valueOf(3)};
     List<BigDecimal> result = (List) jsonLogic.apply(json, data);
 
     assertEquals(3, result.size());
-    assertEquals(0, result.get(0).compareTo(new BigDecimal("2.0")));
-    assertEquals(0, result.get(1).compareTo(new BigDecimal("4.0")));
-    assertEquals(0, result.get(2).compareTo(new BigDecimal("6.0")));
+    assertEquals("2", result.get(0).toPlainString());
+    assertEquals("4", result.get(1).toPlainString());
+    assertEquals("6", result.get(2).toPlainString());
   }
 }

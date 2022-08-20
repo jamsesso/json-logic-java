@@ -16,13 +16,12 @@ public class FilterExpressionTests {
                   "  {\"var\": \"\"},\n" +
                   "  {\"==\": [{\"%\": [{\"var\": \"\"}, 2]}, 0]}\n" +
                   "]}";
-    BigDecimal[] data = new BigDecimal[]{ BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
-            BigDecimal.valueOf(4),BigDecimal.valueOf(5),BigDecimal.valueOf(6)};
+    int[] data = new int[] {1, 2, 3, 4, 5, 6};
     List<BigDecimal> result = (List) jsonLogic.apply(json, data);
 
     assertEquals(3, result.size());
-    assertEquals(0, result.get(0).compareTo(new BigDecimal("2.0")));
-    assertEquals(0, result.get(1).compareTo(new BigDecimal("4.0")));
-    assertEquals(0, result.get(2).compareTo(new BigDecimal("6.0")));
+    assertEquals("2", result.get(0).toPlainString());
+    assertEquals("4", result.get(1).toPlainString());
+    assertEquals("6", result.get(2).toPlainString());
   }
 }

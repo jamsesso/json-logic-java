@@ -15,10 +15,10 @@ public class MergeExpressionTests {
     List<BigDecimal> result = (List) jsonLogic.apply("{\"merge\": [[1, 2], [3, 4]]}", null);
 
     assertEquals(4, result.size());
-    assertEquals(0, result.get(0).compareTo(new BigDecimal("1.0")));
-    assertEquals(0, result.get(1).compareTo(new BigDecimal("2.0")));
-    assertEquals(0, result.get(2).compareTo(new BigDecimal("3.0")));
-    assertEquals(0, result.get(3).compareTo(new BigDecimal("4.0")));
+    assertEquals("1", result.get(0).toPlainString());
+    assertEquals("2", result.get(1).toPlainString());
+    assertEquals("3", result.get(2).toPlainString());
+    assertEquals("4", result.get(3).toPlainString());
   }
 
   @Test
@@ -26,9 +26,9 @@ public class MergeExpressionTests {
     List<BigDecimal> result = (List) jsonLogic.apply("{\"merge\": [1, 2, [3, 4]]}", null);
 
     assertEquals(4, result.size());
-    assertEquals(0, result.get(0).compareTo(new BigDecimal("1.0")));
-    assertEquals(0, result.get(1).compareTo(new BigDecimal("2.0")));
-    assertEquals(0, result.get(2).compareTo(new BigDecimal("3.0")));
-    assertEquals(0, result.get(3).compareTo(new BigDecimal("4.0")));
+    assertEquals("1", result.get(0).toPlainString());
+    assertEquals("2", result.get(1).toPlainString());
+    assertEquals("3", result.get(2).toPlainString());
+    assertEquals("4", result.get(3).toPlainString());
   }
 }

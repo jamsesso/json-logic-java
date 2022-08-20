@@ -19,15 +19,10 @@ public class NumberTests {
       put("long", 1L);
     }};
 
-    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"double\"}", numbers))
-            .compareTo(BigDecimal.valueOf(1)));
-    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"float\"}", numbers))
-            .compareTo(BigDecimal.valueOf(1)));
-    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"int\"}", numbers))
-            .compareTo(BigDecimal.valueOf(1)));
-    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"short\"}", numbers))
-            .compareTo(BigDecimal.valueOf(1)));
-    Assert.assertEquals(0, ((BigDecimal) jsonLogic.apply("{\"var\": \"long\"}", numbers))
-            .compareTo(BigDecimal.valueOf(1)));
+    Assert.assertEquals("1.0", ((BigDecimal) jsonLogic.apply("{\"var\": \"double\"}", numbers)).toPlainString());
+    Assert.assertEquals("1.0", ((BigDecimal) jsonLogic.apply("{\"var\": \"float\"}", numbers)).toPlainString());
+    Assert.assertEquals("1", ((BigDecimal) jsonLogic.apply("{\"var\": \"int\"}", numbers)).toPlainString());
+    Assert.assertEquals("1", ((BigDecimal) jsonLogic.apply("{\"var\": \"short\"}", numbers)).toPlainString());
+    Assert.assertEquals("1", ((BigDecimal) jsonLogic.apply("{\"var\": \"long\"}", numbers)).toPlainString());
   }
 }
