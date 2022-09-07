@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +25,12 @@ public class VariableTests {
       put("pi", 3.14);
     }};
 
-    assertEquals(3.14, jsonLogic.apply("{\"var\": \"pi\"}", data));
+    assertEquals(BigDecimal.valueOf(3.14), jsonLogic.apply("{\"var\": \"pi\"}", data));
   }
 
   @Test
   public void testDefaultValue() throws JsonLogicException {
-    assertEquals(3.14, jsonLogic.apply("{\"var\": [\"pi\", 3.14]}", null));
+    assertEquals(BigDecimal.valueOf(3.14), jsonLogic.apply("{\"var\": [\"pi\", 3.14]}", null));
   }
 
   @Test
@@ -95,8 +96,8 @@ public class VariableTests {
     }};
 
     assertEquals("John", jsonLogic.apply("{\"var\": \"users.0.name\"}", data));
-    assertEquals(1337.0, jsonLogic.apply("{\"var\": \"users.0.followers\"}", data));
+    assertEquals(BigDecimal.valueOf(1337), jsonLogic.apply("{\"var\": \"users.0.followers\"}", data));
     assertEquals("Jane", jsonLogic.apply("{\"var\": \"users.1.name\"}", data));
-    assertEquals(2048.0, jsonLogic.apply("{\"var\": \"users.1.followers\"}", data));
+    assertEquals(BigDecimal.valueOf(2048), jsonLogic.apply("{\"var\": \"users.1.followers\"}", data));
   }
 }

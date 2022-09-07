@@ -2,6 +2,8 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 
 public class ReduceExpressionTests {
@@ -17,6 +19,6 @@ public class ReduceExpressionTests {
     int[] data = new int[] {1, 2, 3, 4, 5, 6};
     Object result = jsonLogic.apply(json, data);
 
-    assertEquals(21.0, result);
+    assertEquals(BigDecimal.valueOf(21), result);
   }
 }

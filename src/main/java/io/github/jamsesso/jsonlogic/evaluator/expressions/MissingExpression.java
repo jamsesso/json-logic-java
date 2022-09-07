@@ -4,6 +4,7 @@ import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 import io.github.jamsesso.jsonlogic.utils.MapLike;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class MissingExpression implements PreEvaluatedArgumentsExpression {
@@ -23,14 +24,14 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
 
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
-    if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
+    if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof BigDecimal))) {
       throw new JsonLogicEvaluationException("missing_some expects first argument to be an integer and the second " +
               "argument to be an array");
     }
 
     if (!MapLike.isEligible(data)) {
       if (isSome) {
-        if (((Double) arguments.get(0)).intValue() <= 0) {
+        if (((BigDecimal) arguments.get(0)).intValue() <= 0) {
           return Collections.EMPTY_LIST;
         }
         return arguments.get(1);
@@ -45,7 +46,7 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
 
     requiredKeys.removeAll(providedKeys); // Keys that I need but do not have
 
-    if (isSome && options.size() - requiredKeys.size() >= ((Double) arguments.get(0)).intValue()) {
+    if (isSome && options.size() - requiredKeys.size() >= ((BigDecimal) arguments.get(0)).intValue()) {
       return Collections.EMPTY_LIST;
     }
 

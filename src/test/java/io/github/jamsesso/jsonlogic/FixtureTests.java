@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class FixtureTests {
@@ -39,7 +40,11 @@ public class FixtureTests {
       try {
         Object result = jsonLogic.apply(fixture.getJson(), fixture.getData());
 
-        if (!Objects.equals(result, fixture.getExpectedValue())) {
+        if (result instanceof BigDecimal) {
+            if (((BigDecimal) result).compareTo((BigDecimal) fixture.getExpectedValue()) != 0) {
+              failures.add(new TestResult(fixture, result));
+            }
+        } else if (!Objects.equals(result, fixture.getExpectedValue())) {
           failures.add(new TestResult(fixture, result));
         }
       }

@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic.evaluator;
 
 import io.github.jamsesso.jsonlogic.ast.*;
 import io.github.jamsesso.jsonlogic.utils.ArrayLike;
+import io.github.jamsesso.jsonlogic.utils.BigDecimalOperations;
 
 import java.util.*;
 
@@ -134,7 +135,7 @@ public class JsonLogicEvaluator {
 
   public static Object transform(Object value) {
     if (value instanceof Number) {
-      return ((Number) value).doubleValue();
+      return BigDecimalOperations.fromNumber((Number) value);
     }
 
     return value;
