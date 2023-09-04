@@ -72,12 +72,35 @@ public class JsonLogicEvaluator {
 
       String[] keys = name.split("\\.");
       Object result = data;
+      Object value = null;
+      try {
+        value = evaluatePartialVariable(name, data);
+        if (value != null) {
+          return value;
+        }
+      } catch (JsonLogicEvaluationException e) {
+        // Ignoring the exception here because we want to try the next case
+      }
 
+
+      int previousIndex = 0;
+      String rightPartial;
       for(String partial : keys) {
         result = evaluatePartialVariable(partial, result);
 
         if(result == null) {
           return defaultValue;
+        }
+
+        previousIndex = name.indexOf(".", previousIndex);
+        rightPartial = name.substring(previousIndex + 1);
+        try {
+          value = evaluatePartialVariable(rightPartial, result);
+          if (value != null) {
+            return value;
+          }
+        } catch (JsonLogicEvaluationException e) {
+          // Ignoring the exception here because we want to try the next case
         }
       }
 

@@ -100,4 +100,27 @@ public class VariableTests {
     assertEquals("Jane", jsonLogic.apply("{\"var\": \"users.1.name\"}", data));
     assertEquals(BigDecimal.valueOf(2048), jsonLogic.apply("{\"var\": \"users.1.followers\"}", data));
   }
+
+  @Test
+  public void testComplexVariablesWithDots() throws JsonLogicException {
+    Map<String, Object> data = new HashMap<String, Object>() {{
+      put("users", new HashMap<String, Object>() {{
+          put("name", "Jane");
+          put("followers", 2048);
+          put("options.a", 100);
+          put("options.b", 20);
+          put("options", new HashMap<String, Object>() {{
+            put("c", 30);
+          }});
+        }}
+      );
+      put("users.count", 23);
+      put("users.options.a", 10);
+    }};
+
+    assertEquals(BigDecimal.valueOf(23), jsonLogic.apply("{\"var\": \"users.count\"}", data));
+    assertEquals(BigDecimal.valueOf(10), jsonLogic.apply("{\"var\": \"users.options.a\"}", data));
+    assertEquals(BigDecimal.valueOf(20), jsonLogic.apply("{\"var\": \"users.options.b\"}", data));
+    assertEquals(BigDecimal.valueOf(30), jsonLogic.apply("{\"var\": \"users.options.c\"}", data));
+  }
 }
