@@ -12,14 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public final class JsonLogic {
-  private final List<JsonLogicExpression> expressions;
-  private final Map<String, JsonLogicNode> parseCache;
+  private final Map<String, JsonLogicNode> parseCache = new ConcurrentHashMap<>();
+  private final Map<String, JsonLogicExpression> expressions = new ConcurrentHashMap<>();
   private JsonLogicEvaluator evaluator;
 
   public JsonLogic() {
-    this.expressions = new ArrayList<>();
-    this.parseCache = new ConcurrentHashMap<>();
-
     // Add default operations
     addOperation(MathExpression.ADD);
     addOperation(MathExpression.SUBTRACT);
@@ -72,7 +69,7 @@ public final class JsonLogic {
   }
 
   public JsonLogic addOperation(JsonLogicExpression expression) {
-    expressions.add(expression);
+    expressions.put(expression.key(), expression);
     evaluator = null;
 
     return this;
