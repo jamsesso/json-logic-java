@@ -6,12 +6,18 @@ import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 import java.util.*;
 
 public class JsonLogicEvaluator {
-  private final Map<String, JsonLogicExpression> expressions = new HashMap<>();
+  private final Map<String, JsonLogicExpression> expressions;
 
   public JsonLogicEvaluator(Collection<JsonLogicExpression> expressions) {
+    this.expressions = new HashMap<>();
+
     for (JsonLogicExpression expression : expressions) {
       this.expressions.put(expression.key(), expression);
     }
+  }
+
+  public JsonLogicEvaluator(Map<String, JsonLogicExpression> expressions) {
+    this.expressions = Collections.unmodifiableMap(expressions);
   }
 
   public Object evaluate(JsonLogicNode node, Object data) throws JsonLogicEvaluationException {
