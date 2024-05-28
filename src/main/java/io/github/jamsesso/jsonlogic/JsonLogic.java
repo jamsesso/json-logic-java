@@ -58,6 +58,9 @@ public final class JsonLogic {
     addOperation(SubstringExpression.INSTANCE);
     addOperation(MissingExpression.ALL);
     addOperation(MissingExpression.SOME);
+    addOperation(DateConversionExpression.INSTANCE);
+    addOperation(DateArithmeticExpression.DATE_ADD);
+    addOperation(DateArithmeticExpression.DATE_SUBTRACT);
   }
 
   public JsonLogic addOperation(String name, Function<Object[], Object> function) {

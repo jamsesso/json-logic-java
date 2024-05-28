@@ -25,7 +25,7 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
 
   @Override
   public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
-    // Convert the arguments to doubles
+    // Convert the arguments to BigDecimal
     int n = Math.min(arguments.size(), 3);
 
     if (n < 2) {

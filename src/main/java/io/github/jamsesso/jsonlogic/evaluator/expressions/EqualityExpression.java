@@ -3,8 +3,11 @@ package io.github.jamsesso.jsonlogic.evaluator.expressions;
 import io.github.jamsesso.jsonlogic.JsonLogic;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import io.github.jamsesso.jsonlogic.utils.BigDecimalOperations;
+import io.github.jamsesso.jsonlogic.utils.DateOperations;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class EqualityExpression implements PreEvaluatedArgumentsExpression {
@@ -42,6 +45,18 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
     if (left instanceof Number && right instanceof Number) {
       return BigDecimalOperations.fromNumber((Number) left)
               .equals(BigDecimalOperations.fromNumber((Number) right));
+    }
+
+    if (left instanceof OffsetDateTime && right instanceof OffsetDateTime) {
+      return DateOperations.equals((OffsetDateTime) left, (OffsetDateTime) right);
+    }
+
+    if (left instanceof OffsetDateTime && right instanceof String) {
+      return compareDateToString((OffsetDateTime) left, (String) right);
+    }
+
+    if (left instanceof String && right instanceof OffsetDateTime) {
+      return compareDateToString((OffsetDateTime) right, (String) left);
     }
 
     if (left instanceof Number && right instanceof String) {
@@ -106,5 +121,14 @@ public class EqualityExpression implements PreEvaluatedArgumentsExpression {
 
   private boolean compareStringToBoolean(String left, Boolean right) {
     return JsonLogic.truthy(left) == right;
+  }
+
+  private boolean compareDateToString(OffsetDateTime left, String right) {
+    try {
+      return DateOperations.equals(left, DateOperations.fromString(right.trim()));
+    }
+    catch (DateTimeParseException e) {
+      return false;
+    }
   }
 }
