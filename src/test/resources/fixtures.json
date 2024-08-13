@@ -3711,5 +3711,119 @@
       "items": []
     },
     false
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": ""
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    [],
+    false
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": ""
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    ["item1"],
+    true
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": ""
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    ["item4"],
+    false
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": "item"
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    {},
+    false
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": "item"
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    { "item": ["item1"] },
+    true
+  ],
+  [
+    {
+      "all": [
+        {
+          "var": "item"
+        },
+        {
+          "in": [
+            {
+              "var": ""
+            },
+            ["item1","item2","item3"]
+          ]
+        }
+      ]
+    },
+    { "item": ["item4"] },
+    false
   ]
 ]

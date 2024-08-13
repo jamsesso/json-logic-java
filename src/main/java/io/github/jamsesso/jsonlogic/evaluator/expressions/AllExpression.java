@@ -28,6 +28,10 @@ public class AllExpression implements JsonLogicExpression {
 
     Object maybeArray = evaluator.evaluate(arguments.get(0), data);
 
+    if (maybeArray == null) {
+      return false;
+    }
+
     if (!ArrayLike.isEligible(maybeArray)) {
       throw new JsonLogicEvaluationException("first argument to all must be a valid array");
     }
