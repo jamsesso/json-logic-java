@@ -29,6 +29,14 @@ task sourcesJar(type: Jar) {
   from sourceSets.main.allSource
 }
 
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+    showStandardStreams = true
+  }
+}
+
 artifacts {
   archives jar, javadocJar, sourcesJar
 }
