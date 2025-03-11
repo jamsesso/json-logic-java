@@ -33,16 +33,25 @@ artifacts {
   archives jar, javadocJar, sourcesJar
 }
 
-signing {
-  sign configurations.archives
-}
-
 def getSonatypeUsername() {
     return System.getenv('SONATYPE_USERNAME')
 }
 
 def getSonatypePassword() {
     return System.getenv('SONATYPE_PASSWORD')
+}
+
+def hasCredentials() {
+  def result = getSonatypeUsername() != null && getSonatypePassword() != null
+  if (!result) {
+    println "Cannot publish package since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
+  }
+  return result
+}
+
+signing {
+  setRequired { hasCredentials() }
+  sign configurations.archives
 }
 
 uploadArchives {
@@ -88,16 +97,5 @@ uploadArchives {
       }
     }
   }
+  onlyIf { hasCredentials() }
 }
-
-// Add a check to ensure credentials are present before upload
-def hasCredentials() {
-  def result = getSonatypeUsername() != null && getSonatypePassword() != null
-  if (!result) {
-    println "Skipping uploadArchives since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
-  }
-  return result
-}
-
-uploadArchives.onlyIf hasCredentials
-signing.onlyIf hasCredentials
