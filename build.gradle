@@ -91,10 +91,13 @@ uploadArchives {
 }
 
 // Add a check to ensure credentials are present before upload
-uploadArchives.onlyIf {
-    def hasCredentials = getSonatypeUsername() != null && getSonatypePassword() != null
-    if (!hasCredentials) {
-        println "Skipping uploadArchives since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
-    }
-    return hasCredentials
+def hasCredentials() {
+  def result = getSonatypeUsername() != null && getSonatypePassword() != null
+  if (!result) {
+    println "Skipping uploadArchives since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
+  }
+  return result
 }
+
+uploadArchives.onlyIf hasCredentials
+signing.onlyIf hasCredentials
