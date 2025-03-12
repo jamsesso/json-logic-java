@@ -58,7 +58,8 @@ def hasCredentials() {
 }
 
 signing {
-  setRequired { hasCredentials() }
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASSWORD'))
   sign configurations.archives
 }
 
