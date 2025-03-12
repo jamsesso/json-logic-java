@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build
 
 on:
   push:
@@ -33,6 +33,7 @@ jobs:
 
   publish:
     needs: build
+    # TODO
     # if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     environment: production
@@ -51,8 +52,7 @@ jobs:
       with:
         name: build-artifacts
         path: build/
-    - name: Debug build artifacts (delete me)
-      run: ls -la build/
+    # TODO
     # - name: Set release version
     #   run: |
     #     # Remove -SNAPSHOT from version
@@ -94,4 +94,4 @@ jobs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add --all
         git commit -m "Prepare version $NEXT_VERSION for development [skip ci]"
-        git push
+        git push origin HEAD:github_actions #TODO
