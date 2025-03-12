@@ -26,10 +26,10 @@ jobs:
     - name: Build
       run: ./gradlew build
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: build/**/*
+        path: build/
 
   publish:
     needs: build
@@ -47,7 +47,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: build-artifacts
         path: build/
