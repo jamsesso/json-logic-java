@@ -23,22 +23,22 @@ public class FilterExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
     throws JsonLogicEvaluationException {
     if (arguments.size() != 2) {
-      throw new JsonLogicEvaluationException("filter expects exactly 2 arguments");
+      throw new JsonLogicEvaluationException("filter expects exactly 2 arguments", jsonPath);
     }
 
-    Object maybeArray = evaluator.evaluate(arguments.get(0), data);
+    Object maybeArray = evaluator.evaluate(arguments.get(0), data, jsonPath + "[0]");
 
     if (!ArrayLike.isEligible(maybeArray)) {
-      throw new JsonLogicEvaluationException("first argument to filter must be a valid array");
+      throw new JsonLogicEvaluationException("first argument to filter must be a valid array", jsonPath + "[0]");
     }
 
     List<Object> result = new ArrayList<>();
 
     for (Object item : new ArrayLike(maybeArray)) {
-      if(JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item))) {
+      if(JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item, jsonPath + "[1]"))) {
         result.add(item);
       }
     }

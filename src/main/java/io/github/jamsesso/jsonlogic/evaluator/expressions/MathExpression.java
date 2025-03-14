@@ -34,28 +34,9 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (arguments.isEmpty()) {
       return null;
-    }
-
-    if (arguments.size() == 1) {
-      if (key.equals("+") && arguments.get(0) instanceof String) {
-        try {
-          return Double.parseDouble((String) arguments.get(0));
-        }
-        catch (NumberFormatException e) {
-          throw new JsonLogicEvaluationException(e);
-        }
-      }
-
-      if (key.equals("-") && arguments.get(0) instanceof Number) {
-        return -1 * ((Number) arguments.get(0)).doubleValue();
-      }
-
-      if (key.equals("/")) {
-        return null;
-      }
     }
 
     // Collect all of the arguments
@@ -77,6 +58,16 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
       }
       else {
         values[i] = ((Number) value).doubleValue();
+      }
+    }
+
+    if (values.length == 1) {
+      if (key.equals("-")) {
+        return -values[0];
+      }
+
+      if (key.equals("/")) {
+        return null;
       }
     }
 

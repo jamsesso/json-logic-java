@@ -22,10 +22,10 @@ public class MissingExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
-    if (isSome && (!ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
+    if (isSome && (arguments.size() < 2 || !ArrayLike.isEligible(arguments.get(1)) || !(arguments.get(0) instanceof Double))) {
       throw new JsonLogicEvaluationException("missing_some expects first argument to be an integer and the second " +
-              "argument to be an array");
+              "argument to be an array", jsonPath);
     }
 
     if (!MapLike.isEligible(data)) {

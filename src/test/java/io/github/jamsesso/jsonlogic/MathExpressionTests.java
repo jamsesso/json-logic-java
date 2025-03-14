@@ -3,6 +3,7 @@ package io.github.jamsesso.jsonlogic;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MathExpressionTests {
   private static final JsonLogic jsonLogic = new JsonLogic();
@@ -32,6 +33,13 @@ public class MathExpressionTests {
   }
 
   @Test
+  public void testStringAdd() throws JsonLogicException {
+    assertNull(jsonLogic.apply("{\"+\" : \"foo\"}", null));
+    assertNull(jsonLogic.apply("{\"+\" : [\"foo\"]}", null));
+    assertNull(jsonLogic.apply("{\"+\" : [1, \"foo\"]}", null));
+  }
+
+  @Test
   public void testSubtract() throws JsonLogicException {
     String json = "{\"-\":[4,2]}";
     Object result = jsonLogic.apply(json, null);
@@ -42,6 +50,14 @@ public class MathExpressionTests {
   @Test
   public void testSingleSubtract() throws JsonLogicException {
     String json = "{\"-\": 2 }";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(-2.0, result);
+  }
+
+  @Test
+  public void testSingleSubtractString() throws JsonLogicException {
+    String json = "{\"-\": \"2\" }";
     Object result = jsonLogic.apply(json, null);
 
     assertEquals(-2.0, result);

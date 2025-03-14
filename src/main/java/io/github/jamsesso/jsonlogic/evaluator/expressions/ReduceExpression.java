@@ -22,14 +22,14 @@ public class ReduceExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
     throws JsonLogicEvaluationException {
     if (arguments.size() != 3) {
-      throw new JsonLogicEvaluationException("reduce expects exactly 3 arguments");
+      throw new JsonLogicEvaluationException("reduce expects exactly 3 arguments", jsonPath);
     }
 
-    Object maybeArray = evaluator.evaluate(arguments.get(0), data);
-    Object accumulator = evaluator.evaluate(arguments.get(2), data);
+    Object maybeArray = evaluator.evaluate(arguments.get(0), data, jsonPath + "[0]");
+    Object accumulator = evaluator.evaluate(arguments.get(2), data, jsonPath + "[2]");
 
     if (!ArrayLike.isEligible(maybeArray)) {
       return accumulator;
@@ -40,7 +40,7 @@ public class ReduceExpression implements JsonLogicExpression {
 
     for (Object item : new ArrayLike(maybeArray)) {
       context.put("current", item);
-      context.put("accumulator", evaluator.evaluate(arguments.get(1), context));
+      context.put("accumulator", evaluator.evaluate(arguments.get(1), context, jsonPath + "[1]"));
     }
 
     return context.get("accumulator");

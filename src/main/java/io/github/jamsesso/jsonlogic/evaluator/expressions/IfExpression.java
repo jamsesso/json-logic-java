@@ -23,7 +23,8 @@ public class IfExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data,
+      String jsonPath)
     throws JsonLogicEvaluationException {
     if (arguments.size() < 1) {
       return null;
@@ -31,13 +32,13 @@ public class IfExpression implements JsonLogicExpression {
 
     // If there is only a single argument, simply evaluate & return that argument.
     if (arguments.size() == 1) {
-      return evaluator.evaluate(arguments.get(0), data);
+      return evaluator.evaluate(arguments.get(0), data, jsonPath + "[0]");
     }
 
     // If there is 2 arguments, only evaluate the second argument if the first argument is truthy.
     if (arguments.size() == 2) {
-      return JsonLogic.truthy(evaluator.evaluate(arguments.get(0), data))
-        ? evaluator.evaluate(arguments.get(1), data)
+      return JsonLogic.truthy(evaluator.evaluate(arguments.get(0), data, jsonPath + "[0]"))
+        ? evaluator.evaluate(arguments.get(1), data, jsonPath + "[1]")
         : null;
     }
 
@@ -45,8 +46,8 @@ public class IfExpression implements JsonLogicExpression {
       JsonLogicNode condition = arguments.get(i);
       JsonLogicNode resultIfTrue = arguments.get(i + 1);
 
-      if (JsonLogic.truthy(evaluator.evaluate(condition, data))) {
-        return evaluator.evaluate(resultIfTrue, data);
+      if (JsonLogic.truthy(evaluator.evaluate(condition, data, String.format("%s[%d]", jsonPath, i)))) {
+        return evaluator.evaluate(resultIfTrue, data, String.format("%s[%d]", jsonPath, i + 1));
       }
     }
 
@@ -54,6 +55,6 @@ public class IfExpression implements JsonLogicExpression {
       return null;
     }
 
-    return evaluator.evaluate(arguments.get(arguments.size() - 1), data);
+    return evaluator.evaluate(arguments.get(arguments.size() - 1), data, String.format("%s[%d]", jsonPath, arguments.size() - 1));
   }
 }

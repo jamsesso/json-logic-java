@@ -21,9 +21,9 @@ public class StrictInequalityExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
     throws JsonLogicEvaluationException {
-    boolean result = (boolean) delegate.evaluate(evaluator, arguments, data);
+    boolean result = (boolean) delegate.evaluate(evaluator, arguments, data, jsonPath);
 
     return !result;
   }

@@ -17,9 +17,9 @@ public class StrictEqualityExpression implements PreEvaluatedArgumentsExpression
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (arguments.size() != 2) {
-      throw new JsonLogicEvaluationException("equality expressions expect exactly 2 arguments");
+      throw new JsonLogicEvaluationException("equality expressions expect exactly 2 arguments", jsonPath);
     }
 
     Object left = arguments.get(0);
