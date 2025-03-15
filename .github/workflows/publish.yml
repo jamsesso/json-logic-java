@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ main, master, github_actions ]
+    branches: [ main, master ]
 
 jobs:
   publish:
@@ -30,7 +30,7 @@ jobs:
         SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
       run: |
-        ./gradlew uploadArchives
+        ./gradlew build uploadArchives
     - name: Bump version
       id: bump_version
       run: |
