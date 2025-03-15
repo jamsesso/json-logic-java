@@ -29,25 +29,51 @@ task sourcesJar(type: Jar) {
   from sourceSets.main.allSource
 }
 
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+    showStandardStreams = true
+  }
+}
+
 artifacts {
   archives jar, javadocJar, sourcesJar
 }
 
+def getSonatypeUsername() {
+    return System.getenv('SONATYPE_USERNAME')
+}
+
+def getSonatypePassword() {
+    return System.getenv('SONATYPE_PASSWORD')
+}
+
+def hasCredentials() {
+  def result = getSonatypeUsername() != null && getSonatypePassword() != null
+  if (!result) {
+    println "Cannot publish package since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
+  }
+  return result
+}
+
 signing {
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASSWORD'))
   sign configurations.archives
 }
 
 uploadArchives {
   repositories {
     mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      beforeDeployment { deployment -> signing.signPom(deployment) }
 
       repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: sonatypeUsername, password: sonatypePassword)
+        authentication(userName: getSonatypeUsername(), password: getSonatypePassword())
       }
 
       snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: sonatypeUsername, password: sonatypePassword)
+        authentication(userName: getSonatypeUsername(), password: getSonatypePassword())
       }
 
       pom.project {
@@ -80,4 +106,5 @@ uploadArchives {
       }
     }
   }
+  onlyIf { hasCredentials() }
 }
