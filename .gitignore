@@ -4,3 +4,4 @@ out/
 build/
 .DS_Store
 secring.gpg
+.vscode
