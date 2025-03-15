@@ -56,16 +56,3 @@ assert JsonLogic.truthy("Hello world!") == true;
 
 // etc...
 ```
-
-## Building a Release
-
-For now, there is no CI pipeline. 
-Changes do not happen frequently enough to require them.
-
-1. Remove the `-SNAPSHOT` from the version in `build.gradle`.
-2. Update the `README.md` installation instructions to use the new version.
-3. Add and commit the changes.
-4. Create a git tag (`git tag v{VERSION}`) and push: `git push && git push --tags`.
-5. Run `./gradlew clean build uploadArchives` to push to Sonatype.
-6. Bump the version in the `build.gradle` file and add `-SNAPSHOT` to it.
-7. Add and commit the changes.
