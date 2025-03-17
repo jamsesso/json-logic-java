@@ -20,9 +20,9 @@ public class LogExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (arguments.isEmpty()) {
-      throw new JsonLogicEvaluationException("log operator requires exactly 1 argument");
+      throw new JsonLogicEvaluationException("log operator requires exactly 1 argument", jsonPath);
     }
 
     Object value = arguments.get(0);

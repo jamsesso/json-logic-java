@@ -20,7 +20,7 @@ public class NotExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) {
+  public Object evaluate(List arguments, Object data, String jsonPath) {
     boolean result;
 
     if (arguments.isEmpty()) {

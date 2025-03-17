@@ -18,7 +18,7 @@ public class ConcatenateExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     return arguments.stream()
       .map(obj -> {
         if (obj instanceof Double && obj.toString().endsWith(".0")) {

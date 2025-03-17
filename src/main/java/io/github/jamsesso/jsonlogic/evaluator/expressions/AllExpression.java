@@ -20,20 +20,20 @@ public class AllExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
     throws JsonLogicEvaluationException {
     if (arguments.size() != 2) {
-      throw new JsonLogicEvaluationException("all expects exactly 2 arguments");
+      throw new JsonLogicEvaluationException("all expects exactly 2 arguments", jsonPath);
     }
 
-    Object maybeArray = evaluator.evaluate(arguments.get(0), data);
+    Object maybeArray = evaluator.evaluate(arguments.get(0), data, jsonPath + "[0]");
 
     if (maybeArray == null) {
       return false;
     }
 
     if (!ArrayLike.isEligible(maybeArray)) {
-      throw new JsonLogicEvaluationException("first argument to all must be a valid array");
+      throw new JsonLogicEvaluationException("first argument to all must be a valid array", jsonPath);
     }
 
     ArrayLike array = new ArrayLike(maybeArray);
@@ -42,8 +42,9 @@ public class AllExpression implements JsonLogicExpression {
       return false;
     }
 
+    int index = 1;
     for (Object item : array) {
-      if(!JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item))) {
+      if(!JsonLogic.truthy(evaluator.evaluate(arguments.get(1), item,  String.format("%s[%d]", jsonPath, index)))) {
         return false;
       }
     }

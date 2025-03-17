@@ -22,12 +22,12 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     // Convert the arguments to doubles
     int n = Math.min(arguments.size(), 3);
 
     if (n < 2) {
-      throw new JsonLogicEvaluationException("'" + key + "' requires at least 2 arguments");
+      throw new JsonLogicEvaluationException("'" + key + "' requires at least 2 arguments", jsonPath);
     }
 
     double[] values = new double[n];
@@ -51,8 +51,8 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
       }
     }
 
-    // Handle between comparisons (supported for < and <=)
-    if (arguments.size() == 3) {
+    // Handle between comparisons
+    if (arguments.size() >= 3) {
       switch (key) {
         case "<":
           return values[0] < values[1] && values[1] < values[2];
@@ -60,8 +60,14 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
         case "<=":
           return values[0] <= values[1] && values[1] <= values[2];
 
+        case ">":
+          return values[0] > values[1] && values[1] > values[2];
+
+        case ">=":
+          return values[0] >= values[1] && values[1] >= values[2];
+
         default:
-          throw new JsonLogicEvaluationException("'" + key + "' does not support between comparisons");
+          throw new JsonLogicEvaluationException("'" + key + "' does not support between comparisons", jsonPath);
       }
     }
 
@@ -80,7 +86,7 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
         return values[0] >= values[1];
 
       default:
-        throw new JsonLogicEvaluationException("'" + key + "' is not a comparison expression");
+        throw new JsonLogicEvaluationException("'" + key + "' is not a comparison expression", jsonPath);
     }
   }
 }

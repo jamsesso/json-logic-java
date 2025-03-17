@@ -17,13 +17,13 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
   }
 
   @Override
-  public Object evaluate(List arguments, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(List arguments, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (arguments.size() < 2 || arguments.size() > 3) {
-      throw new JsonLogicEvaluationException("substr expects 2 or 3 arguments");
+      throw new JsonLogicEvaluationException("substr expects 2 or 3 arguments", jsonPath);
     }
 
     if (!(arguments.get(1) instanceof Double)) {
-      throw new JsonLogicEvaluationException("first argument to substr must be a number");
+      throw new JsonLogicEvaluationException("second argument to substr must be a number", jsonPath + "[1]");
     }
 
     String value = arguments.get(0).toString();
@@ -44,7 +44,7 @@ public class SubstringExpression implements PreEvaluatedArgumentsExpression {
     }
     else {
       if (!(arguments.get(2) instanceof Double)) {
-        throw new JsonLogicEvaluationException("second argument to substr must be an integer");
+        throw new JsonLogicEvaluationException("third argument to substr must be an integer", jsonPath + "[2]");
       }
 
       startIndex = ((Double) arguments.get(1)).intValue();

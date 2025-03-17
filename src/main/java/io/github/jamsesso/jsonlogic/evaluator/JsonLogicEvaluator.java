@@ -20,12 +20,12 @@ public class JsonLogicEvaluator {
     this.expressions = Collections.unmodifiableMap(expressions);
   }
 
-  public Object evaluate(JsonLogicNode node, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(JsonLogicNode node, Object data, String jsonPath) throws JsonLogicEvaluationException {
     switch (node.getType()) {
       case PRIMITIVE: return evaluate((JsonLogicPrimitive) node);
-      case VARIABLE: return evaluate((JsonLogicVariable) node, data);
-      case ARRAY: return evaluate((JsonLogicArray) node, data);
-      default: return evaluate((JsonLogicOperation) node, data);
+      case VARIABLE: return evaluate((JsonLogicVariable) node, data, jsonPath + ".var");
+      case ARRAY: return evaluate((JsonLogicArray) node, data, jsonPath);
+      default: return evaluate((JsonLogicOperation) node, data, jsonPath);
     }
   }
 
@@ -38,19 +38,20 @@ public class JsonLogicEvaluator {
     }
   }
 
-  public Object evaluate(JsonLogicVariable variable, Object data) throws JsonLogicEvaluationException {
-    Object defaultValue = evaluate(variable.getDefaultValue(), null);
+  public Object evaluate(JsonLogicVariable variable, Object data, String jsonPath)
+      throws JsonLogicEvaluationException {
+    Object defaultValue = evaluate(variable.getDefaultValue(), null, jsonPath + "[1]");
 
     if (data == null) {
       return defaultValue;
     }
 
-    Object key = evaluate(variable.getKey(), data);
+    Object key = evaluate(variable.getKey(), data, jsonPath + "[0]");
 
     if (key == null) {
       return Optional.of(data)
         .map(JsonLogicEvaluator::transform)
-        .orElse(evaluate(variable.getDefaultValue(), null));
+        .orElse(evaluate(variable.getDefaultValue(), null, jsonPath + "[1]"));
     }
 
     if (key instanceof Number) {
@@ -78,10 +79,10 @@ public class JsonLogicEvaluator {
       String[] keys = name.split("\\.");
       Object result = data;
 
-      for(String partial : keys) {
-        result = evaluatePartialVariable(partial, result);
+      for (String partial : keys) {
+        result = evaluatePartialVariable(partial, result, jsonPath + "[0]");
 
-        if(result == null) {
+        if (result == null) {
           return defaultValue;
         }
       }
@@ -89,10 +90,10 @@ public class JsonLogicEvaluator {
       return result;
     }
 
-    throw new JsonLogicEvaluationException("var first argument must be null, number, or string");
+    throw new JsonLogicEvaluationException("var first argument must be null, number, or string", jsonPath + "[0]");
   }
 
-  private Object evaluatePartialVariable(String key, Object data) throws JsonLogicEvaluationException {
+  private Object evaluatePartialVariable(String key, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (ArrayLike.isEligible(data)) {
       ArrayLike list = new ArrayLike(data);
       int index;
@@ -101,7 +102,7 @@ public class JsonLogicEvaluator {
         index = Integer.parseInt(key);
       }
       catch (NumberFormatException e) {
-        throw new JsonLogicEvaluationException(e);
+        throw new JsonLogicEvaluationException(e, jsonPath);
       }
 
       if (index < 0 || index >= list.size()) {
@@ -118,24 +119,25 @@ public class JsonLogicEvaluator {
     return null;
   }
 
-  public List<Object> evaluate(JsonLogicArray array, Object data) throws JsonLogicEvaluationException {
+  public List<Object> evaluate(JsonLogicArray array, Object data, String jsonPath) throws JsonLogicEvaluationException {
     List<Object> values = new ArrayList<>(array.size());
 
+    int index = 0;
     for(JsonLogicNode element : array) {
-      values.add(evaluate(element, data));
+      values.add(evaluate(element, data, String.format("%s[%d]", jsonPath, index++)));
     }
 
     return values;
   }
 
-  public Object evaluate(JsonLogicOperation operation, Object data) throws JsonLogicEvaluationException {
+  public Object evaluate(JsonLogicOperation operation, Object data, String jsonPath) throws JsonLogicEvaluationException {
     JsonLogicExpression handler = expressions.get(operation.getOperator());
 
     if (handler == null) {
-      throw new JsonLogicEvaluationException("Undefined operation '" + operation.getOperator() + "'");
+      throw new JsonLogicEvaluationException("Undefined operation '" + operation.getOperator() + "'", jsonPath);
     }
 
-    return handler.evaluate(this, operation.getArguments(), data);
+    return handler.evaluate(this, operation.getArguments(), data, String.format("%s.%s", jsonPath, operation.getOperator()));
   }
 
   public static Object transform(Object value) {

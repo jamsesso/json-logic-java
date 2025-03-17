@@ -23,16 +23,17 @@ public class LogicExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
     throws JsonLogicEvaluationException {
     if (arguments.size() < 1) {
-      throw new JsonLogicEvaluationException("and operator expects at least 1 argument");
+      throw new JsonLogicEvaluationException(key() + " operator expects at least 1 argument", jsonPath);
     }
 
     Object result = null;
 
+    int index = 0;
     for (JsonLogicNode element : arguments) {
-      result = evaluator.evaluate(element, data);
+      result = evaluator.evaluate(element, data, String.format("%s[%d]", jsonPath, index));
 
       if ((isAnd && !JsonLogic.truthy(result)) || (!isAnd && JsonLogic.truthy(result))) {
         return result;
