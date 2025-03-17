@@ -33,6 +33,14 @@ public class MathExpressionTests {
   }
 
   @Test
+  public void testAddWithArray() throws JsonLogicException {
+    String json = "{\"+\":[2,[[3,4],5]]}";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(5.0, result);  // This matches reference impl at jsonlogic.com
+  }
+
+  @Test
   public void testStringAdd() throws JsonLogicException {
     assertNull(jsonLogic.apply("{\"+\" : \"foo\"}", null));
     assertNull(jsonLogic.apply("{\"+\" : [\"foo\"]}", null));
@@ -77,6 +85,14 @@ public class MathExpressionTests {
     Object result = jsonLogic.apply(json, null);
 
     assertEquals(32.0, result);
+  }
+
+  @Test
+  public void testMultiplyWithArray() throws JsonLogicException {
+    String json = "{\"*\":[2,[[3, 4], 5]]}";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(6.0, result);  // This matches reference impl at jsonlogic.com
   }
 
   @Test

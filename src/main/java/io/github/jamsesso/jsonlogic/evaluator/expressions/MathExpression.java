@@ -1,6 +1,7 @@
 package io.github.jamsesso.jsonlogic.evaluator.expressions;
 
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
+import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -45,6 +46,11 @@ public class MathExpression implements PreEvaluatedArgumentsExpression {
     for (int i = 0; i < arguments.size(); i++) {
       Object value = arguments.get(i);
 
+      if (key.equals("*") || key.equals("+")) {
+        while (ArrayLike.isEligible(value)) {
+          value = new ArrayLike(value).get(0);
+        }
+      }
       if (value instanceof String) {
         try {
           values[i] = Double.parseDouble((String) value);
