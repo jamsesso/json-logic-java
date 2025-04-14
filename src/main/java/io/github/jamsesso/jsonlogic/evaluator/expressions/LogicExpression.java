@@ -33,7 +33,7 @@ public class LogicExpression implements JsonLogicExpression {
 
     int index = 0;
     for (JsonLogicNode element : arguments) {
-      result = evaluator.evaluate(element, data, String.format("%s[%d]", jsonPath, index));
+      result = evaluator.evaluate(element, data, String.format("%s[%d]", jsonPath, index++));
 
       if ((isAnd && !JsonLogic.truthy(result)) || (!isAnd && JsonLogic.truthy(result))) {
         return result;

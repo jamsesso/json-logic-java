@@ -3,22 +3,22 @@ package io.github.jamsesso.jsonlogic;
 import com.google.gson.*;
 import io.github.jamsesso.jsonlogic.utils.JsonValueExtractor;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.function.Function;
 
 public class FixtureTests {
-  private static final List<Fixture> FIXTURES = new ArrayList<>();
+  private static final List<Fixture> FIXTURES = readFixtures("fixtures.json", Fixture::fromArray);
 
-  @BeforeClass
-  public static void beforeAll() {
-    InputStream inputStream = FixtureTests.class.getClassLoader().getResourceAsStream("fixtures.json");
+  public static <F> List<F> readFixtures(String fileName, Function<JsonArray, F> makeFixture) {
+    InputStream inputStream = ErrorFixtureTests.class.getClassLoader().getResourceAsStream(fileName);
     JsonParser parser = new JsonParser();
     JsonArray json = parser.parse(new InputStreamReader(inputStream)).getAsJsonArray();
 
+    List<F> fixtures = new ArrayList<>();
     // Pull out each fixture from the array.
     for (JsonElement element : json) {
       if (!element.isJsonArray()) {
@@ -26,8 +26,9 @@ public class FixtureTests {
       }
 
       JsonArray array = element.getAsJsonArray();
-      FIXTURES.add(new Fixture(array.get(0).toString(), array.get(1), array.get(2)));
+      fixtures.add(makeFixture.apply(array));
     }
+    return fixtures;
   }
 
   @Test
@@ -60,6 +61,10 @@ public class FixtureTests {
   }
 
   private static class Fixture {
+    public static Fixture fromArray(JsonArray array) {
+      return new Fixture(array.get(0).toString(), array.get(1), array.get(2));
+    }
+
     private final String json;
     private final Object data;
     private final Object expectedValue;
