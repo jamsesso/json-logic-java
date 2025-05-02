@@ -18,11 +18,14 @@ public final class JsonLogicParser {
       return parse(PARSER.parse(json));
     }
     catch (JsonSyntaxException e) {
-      throw new JsonLogicParseException(e);
+      throw new JsonLogicParseException(e, "$");
     }
   }
 
   private static JsonLogicNode parse(JsonElement root) throws JsonLogicParseException {
+    return parse(root, "$");
+  }
+  private static JsonLogicNode parse(JsonElement root, String jsonPath) throws JsonLogicParseException {
     // Handle null
     if (root.isJsonNull()) {
       return JsonLogicNull.NULL;
@@ -53,8 +56,9 @@ public final class JsonLogicParser {
       JsonArray array = root.getAsJsonArray();
       List<JsonLogicNode> elements = new ArrayList<>(array.size());
 
+      int index = 0;
       for (JsonElement element : array) {
-        elements.add(parse(element));
+        elements.add(parse(element, String.format("%s[%d]", jsonPath, index++)));
       }
 
       return new JsonLogicArray(elements);
@@ -64,11 +68,11 @@ public final class JsonLogicParser {
     JsonObject object = root.getAsJsonObject();
 
     if (object.keySet().size() != 1) {
-      throw new JsonLogicParseException("objects must have exactly 1 key defined, found " + object.keySet().size());
+      throw new JsonLogicParseException("objects must have exactly 1 key defined, found " + object.keySet().size(), jsonPath);
     }
 
     String key = object.keySet().stream().findAny().get();
-    JsonLogicNode argumentNode = parse(object.get(key));
+    JsonLogicNode argumentNode = parse(object.get(key), String.format("%s.%s", jsonPath, key));
     JsonLogicArray arguments;
 
     // Always coerce single-argument operations into a JsonLogicArray with a single element.

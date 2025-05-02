@@ -57,7 +57,7 @@ public final class JsonLogic {
   public JsonLogic addOperation(String name, Function<Object[], Object> function) {
     return addOperation(new PreEvaluatedArgumentsExpression() {
       @Override
-      public Object evaluate(List arguments, Object data) {
+      public Object evaluate(List arguments, Object data, String jsonPath) {
         return function.apply(arguments.toArray());
       }
 
@@ -84,7 +84,7 @@ public final class JsonLogic {
       evaluator = new JsonLogicEvaluator(expressions);
     }
 
-    return evaluator.evaluate(parseCache.get(json), data);
+    return evaluator.evaluate(parseCache.get(json), data, "$");
   }
 
   public static boolean truthy(Object value) {

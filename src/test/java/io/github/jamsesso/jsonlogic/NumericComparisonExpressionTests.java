@@ -54,4 +54,26 @@ public class NumericComparisonExpressionTests {
 
     assertEquals(true, result);
   }
+
+  @Test
+  public void testGtBetweenExclusive() throws JsonLogicException {
+    String json = "{\">\" : [3, 2, 1]}";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(true, result);
+  }
+
+  @Test
+  public void testGtBetweenInclusive() throws JsonLogicException {
+    String json = "{\">=\" : [3, 1, 1]}";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(true, result);
+  }
+
+  @Test
+  public void testEdgeCases() throws JsonLogicException {
+    assertEquals(true, jsonLogic.apply("{\">=\" : [3, 1, 1, 1]}", null));
+    assertEquals(false, jsonLogic.apply("{\">=\" : [3, 1, 3, 1]}", null));
+  }
 }
