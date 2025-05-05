@@ -11,7 +11,7 @@ JsonLogic is documented extensively at [JsonLogic.com](http://jsonlogic.com), in
 <dependency>
   <groupId>io.github.jamsesso</groupId>
   <artifactId>json-logic-java</artifactId>
-  <version>1.0.7</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
