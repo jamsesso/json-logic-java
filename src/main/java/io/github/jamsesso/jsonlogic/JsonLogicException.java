@@ -18,6 +18,11 @@ public class JsonLogicException extends Exception {
     this.jsonPath = jsonPath;
   }
 
+  public JsonLogicException(String msg, Throwable cause, String jsonPath) {
+    super(msg, cause);
+    this.jsonPath = jsonPath;
+  }
+
   public String getJsonPath() {
     return jsonPath;
   }

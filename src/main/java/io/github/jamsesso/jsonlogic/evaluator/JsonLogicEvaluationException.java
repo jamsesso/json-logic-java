@@ -10,4 +10,8 @@ public class JsonLogicEvaluationException extends JsonLogicException {
   public JsonLogicEvaluationException(Throwable cause, String jsonPath) {
     super(cause, jsonPath);
   }
+
+  public JsonLogicEvaluationException(String msg, Throwable cause, String jsonPath) {
+    super(msg, cause, jsonPath);
+  }
 }
