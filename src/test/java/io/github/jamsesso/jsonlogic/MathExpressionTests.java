@@ -96,6 +96,14 @@ public class MathExpressionTests {
   }
 
   @Test
+  public void testMultiplyWithEmptyArray() throws JsonLogicException {
+    String json = "{\"*\":[2,[]]}";
+    Object result = jsonLogic.apply(json, null);
+
+    assertEquals(null, result);  // This matches reference impl at jsonlogic.com
+  }
+
+  @Test
   public void testDivide() throws JsonLogicException {
     String json = "{\"/\":[4,2]}";
     Object result = jsonLogic.apply(json, null);

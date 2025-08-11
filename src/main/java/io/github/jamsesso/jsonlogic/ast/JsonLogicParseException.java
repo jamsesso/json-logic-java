@@ -10,4 +10,8 @@ public class JsonLogicParseException extends JsonLogicException {
   public JsonLogicParseException(Throwable cause, String jsonPath) {
     super(cause, jsonPath);
   }
+
+  public JsonLogicParseException(String msg, Throwable cause, String jsonPath) {
+    super(msg, cause, jsonPath);
+  }
 }
