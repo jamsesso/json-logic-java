@@ -9,9 +9,9 @@ JsonLogic is documented extensively at [JsonLogic.com](http://jsonlogic.com), in
 
 ```xml
 <dependency>
-  <groupId>io.github.jamsesso</groupId>
+  <groupId>com.sailthru</groupId>
   <artifactId>json-logic-java</artifactId>
-  <version>1.1.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -56,3 +56,47 @@ assert JsonLogic.truthy("Hello world!") == true;
 
 // etc...
 ```
+
+## Usage:
+
+### Update dependencies:
+```bash
+./gradlew dependencies --write-locks
+```
+
+### Local testing
+To "publish" a version locally for testing run:
+```bash
+./gradlew publishToMavenLocal
+```
+
+This will publish a copy of the library to maven local that will be accessible within other libraries/services.
+
+Inside your other project update the version of the dependency to `vSANDBOX` to access the library.
+
+For example:
+```
+implementation("com.sailthru:json-logic-java:v2.0.0")
+// Becomes
+implementation("com.sailthru:json-logic-java:vSANDBOX")
+```
+
+## Contents:
+This template contains the bare minimal requirements to create and publish a Java library.
+
+### CI/CD
+CI/CD is provided by CircleCI. Specifically the [Sailthru JVM orb](https://circleci.com/developer/orbs/orb/sailthru/jvm).
+
+Every branch is tested using the `./gradlew check` command.
+
+To publish a release you must [create a GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository#creating-a-release).
+Within this release you will need to create a semantic version tag in the format `vMAJOR.MINOR.PATCH` for example `v1.0.1`.
+
+Once a tag is created CircleCI will automatically detect this and publish the JAR to [CodeArtifact](https://us-east-1.console.aws.amazon.com/codesuite/codeartifact/d/680305091011/sailthru/r/maven).
+
+### Gradle
+Most Gradle logic will be contained within our [Sailthru gradle plugin (gradle-config)](https://github.com/sailthru/gradle-config).
+
+All projects require dependency locking, connecting to CodeArtifact as a source, and to use Checkstyle (this can be disabled if required).
+
+Library projects also include support to publish to CodeArtifact.

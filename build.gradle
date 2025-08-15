@@ -1,110 +1,19 @@
+import com.sailthru.gradle.ProjectType
+
 plugins {
-  id "java"
-  id "maven"
-  id "signing"
+    id("java-library")
+    id("com.sailthru.gradle") version("v0.16.0")
 }
 
-group "io.github.jamsesso"
-version "1.1.1-SNAPSHOT"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-  mavenCentral()
-}
+group "com.sailthru"
 
 dependencies {
-  compile "com.google.code.gson:gson:2.8.5"
-  testCompile "junit:junit:4.12"
+    implementation('com.google.code.gson:gson:2.13.1')
+    testImplementation('junit:junit:4.13.2')
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-  classifier = "javadoc"
-  from javadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-  classifier = "sources"
-  from sourceSets.main.allSource
-}
-
-test {
-  testLogging {
-    events "passed", "skipped", "failed"
-    exceptionFormat "full"
-    showStandardStreams = true
-  }
-}
-
-artifacts {
-  archives jar, javadocJar, sourcesJar
-}
-
-def getSonatypeUsername() {
-    return System.getenv('SONATYPE_USERNAME')
-}
-
-def getSonatypePassword() {
-    return System.getenv('SONATYPE_PASSWORD')
-}
-
-def hasCredentials() {
-  def result = getSonatypeUsername() != null && getSonatypePassword() != null
-  if (!result) {
-    println "Cannot publish package since Sonatype credentials are not set. Please set SONATYPE_USERNAME and SONATYPE_PASSWORD environment variables."
-  }
-  return result
-}
-
-signing {
-  required { gradle.taskGraph.hasTask("uploadArchives") }
-  useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASSWORD'))
-  sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: getSonatypeUsername(), password: getSonatypePassword())
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: getSonatypeUsername(), password: getSonatypePassword())
-      }
-
-      pom.project {
-        name "json-logic-java"
-        artifactId "json-logic-java"
-        packaging "jar"
-        description "A native Java implementation of the json-logic project"
-        url "https://github.com/jamsesso/json-logic-java"
-
-        scm {
-          connection "scm:git@github.com:jamsesso/json-logic-java.git"
-          developerConnection "scm:git@github.com:jamsesso/json-logic-java.git"
-          url "https://github.com/jamsesso/json-logic-java.git"
-        }
-
-        licenses {
-          license {
-            name "MIT License"
-            url "https://github.com/jamsesso/json-logic-java/blob/master/LICENSE"
-          }
-        }
-
-        developers {
-          developer {
-            id "jamsesso"
-            name "Sam Jesso"
-            email "samuel.jesso@gmail.com"
-          }
-        }
-      }
-    }
-  }
-  onlyIf { hasCredentials() }
+sailthru {
+    type = ProjectType.LIBRARY
+    javaVersion = JavaVersion.VERSION_1_8
+    checkstyleEnabled = false
 }
