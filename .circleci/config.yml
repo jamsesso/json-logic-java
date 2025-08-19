@@ -1,0 +1,51 @@
+version: '2.1'
+orbs:
+  jvm: sailthru/jvm@0.4.3
+
+parameters:
+  publish_snapshot:
+    description: Flag indicating a SNAPSHOT version should be built for this branch
+    type: boolean
+    default: false
+
+workflows:
+  build:
+    unless: << pipeline.parameters.publish_snapshot >>
+    jobs:
+      - jvm/test:
+          context:
+            - Docker Hub
+            - Nexus Credentials
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              ignore: /.*/
+
+  publish:
+    jobs:
+      - jvm/publish_jar:
+          context:
+            - Docker Hub
+            - Nexus Credentials
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+.\d+.\d+$/
+          version: ${CIRCLE_TAG}
+
+  publish_snapshot:
+    when: << pipeline.parameters.publish_snapshot >>
+    jobs:
+      - jvm/publish_jar:
+          name: Publish SNAPSHOT JAR
+          context:
+            - Docker Hub
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              ignore: /.*/
+          # add "v" in front so the branch is > than actual version tags
+          version: v${CIRCLE_BRANCH}-SNAPSHOT
