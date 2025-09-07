@@ -6,6 +6,10 @@ import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 import java.util.*;
 
 public class JsonLogicEvaluator {
+
+  /** Sentinel object to represent a missing value (for internal use only). */
+  private static final Object MISSING = new Object();
+
   private final Map<String, JsonLogicExpression> expressions;
 
   public JsonLogicEvaluator(Collection<JsonLogicExpression> expressions) {
@@ -82,8 +86,10 @@ public class JsonLogicEvaluator {
       for (String partial : keys) {
         result = evaluatePartialVariable(partial, result, jsonPath + "[0]");
 
-        if (result == null) {
+        if (result == MISSING) {
           return defaultValue;
+        } else if (result == null) {
+          return null;
         }
       }
 
@@ -106,14 +112,19 @@ public class JsonLogicEvaluator {
       }
 
       if (index < 0 || index >= list.size()) {
-        return null;
+        return MISSING;
       }
 
       return transform(list.get(index));
     }
 
     if (data instanceof Map) {
-      return transform(((Map) data).get(key));
+      Map<?, ?> map = (Map<?, ?>) data;
+      if (map.containsKey(key)) {
+        return transform(map.get(key));
+      } else {
+        return MISSING;
+      }
     }
 
     return null;
