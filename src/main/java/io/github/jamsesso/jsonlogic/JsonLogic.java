@@ -1,7 +1,10 @@
 package io.github.jamsesso.jsonlogic;
 
 import io.github.jamsesso.jsonlogic.ast.JsonLogicNode;
+import io.github.jamsesso.jsonlogic.ast.JsonLogicParseException;
 import io.github.jamsesso.jsonlogic.ast.JsonLogicParser;
+import io.github.jamsesso.jsonlogic.cache.CacheManager;
+import io.github.jamsesso.jsonlogic.cache.ConcurrentHashMapCacheManager;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
@@ -12,11 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public final class JsonLogic {
-  private final Map<String, JsonLogicNode> parseCache = new ConcurrentHashMap<>();
+  private final CacheManager<String, JsonLogicNode> parseCache;
   private final Map<String, JsonLogicExpression> expressions = new ConcurrentHashMap<>();
   private JsonLogicEvaluator evaluator;
 
   public JsonLogic() {
+    this.parseCache = new ConcurrentHashMapCacheManager<>();
+    initializeOperations();
+  }
+
+  public JsonLogic(final CacheManager<String, JsonLogicNode> parseCache) {
+    this.parseCache = parseCache;
+    initializeOperations();
+  }
+
+  private void initializeOperations() {
     // Add default operations
     addOperation(MathExpression.ADD);
     addOperation(MathExpression.SUBTRACT);
