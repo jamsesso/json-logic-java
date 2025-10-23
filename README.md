@@ -46,6 +46,41 @@ String result = (String) jsonLogic.apply("{\"greet\": [\"Sam\"]}", null);
 assert "Hello, Sam!".equals(result);
 ```
 
+You can add your own macros like so:
+
+```java
+// a flag that shows evaluation was performed or not
+final AtomicBoolean called = new AtomicBoolean(false);
+// add an operation that sets the flag when called
+jsonLogic.addOperation("side_effect", args -> {
+            called.set(true);
+            return null;
+            }
+            );
+// add a macro, evaluates the first argument if it is truthy,
+// otherwise evaluates the second argument
+jsonLogic.addMacro("unless", args -> {
+    if (args.size() > 0) {
+        final boolean condition = JsonLogic.truthy(args.evaluate(0));
+        if (args.size() > 1 && !condition) {
+            return args.evaluate(1);
+        } else {
+            return null;
+        }
+   }
+   return null;
+   });
+called.set(false);
+jsonLogic.apply("{\"unless\": [ false , {\"side_effect\": 0}]}", null);
+assert called.get();
+
+called.set(false);
+jsonLogic.apply("{\"unless\": [ true , {\"side_effect\": 0}]}", null);
+assert !called.get();
+```
+
+
+
 There is a `truthy` static method that mimics the truthy-ness rules of Javascript:
 
 ```java
