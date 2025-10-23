@@ -5,8 +5,8 @@ import io.github.jamsesso.jsonlogic.ast.JsonLogicArray;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
+import io.github.jamsesso.jsonlogic.utils.LocalContext;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ReduceExpression implements JsonLogicExpression {
@@ -35,7 +35,7 @@ public class ReduceExpression implements JsonLogicExpression {
       return accumulator;
     }
 
-    Map<String, Object> context = new HashMap<>();
+    Map<String, Object> context = new LocalContext(data);
     context.put("accumulator", accumulator);
 
     for (Object item : new ArrayLike(maybeArray)) {
