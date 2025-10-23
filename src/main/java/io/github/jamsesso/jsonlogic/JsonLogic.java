@@ -4,6 +4,7 @@ import io.github.jamsesso.jsonlogic.ast.JsonLogicNode;
 import io.github.jamsesso.jsonlogic.ast.JsonLogicParser;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
+import io.github.jamsesso.jsonlogic.evaluator.Macro;
 import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
 
 import java.lang.reflect.Array;
@@ -52,6 +53,11 @@ public final class JsonLogic {
     addOperation(SubstringExpression.INSTANCE);
     addOperation(MissingExpression.ALL);
     addOperation(MissingExpression.SOME);
+  }
+
+  public JsonLogic addMacro(String name, Macro macro) {
+    addOperation(new UnEvaluatedArgumentsExpression(name, macro));
+    return this;
   }
 
   public JsonLogic addOperation(String name, Function<Object[], Object> function) {
