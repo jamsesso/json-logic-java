@@ -4,13 +4,14 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class FilterExpressionTests {
   private static final JsonLogic jsonLogic = new JsonLogic();
 
   @Test
-  public void testMap() throws JsonLogicException {
+  public void testFilter() throws JsonLogicException {
     String json = "{\"filter\": [\n" +
                   "  {\"var\": \"\"},\n" +
                   "  {\"==\": [{\"%\": [{\"var\": \"\"}, 2]}, 0]}\n" +
@@ -22,5 +23,18 @@ public class FilterExpressionTests {
     assertEquals(2.0, ((List) result).get(0));
     assertEquals(4.0, ((List) result).get(1));
     assertEquals(6.0, ((List) result).get(2));
+  }
+
+  @Test
+  public void testInvalidFilter() {
+    String json =  "{\"filter\": [\n" +
+        "  {\"var\": {}},\n" +
+        // --------  ^  ------
+        "  {\"==\": [{\"%\": [{\"var\": \"\"}, 2]}, 0]}\n" +
+        "]}";
+
+    String expectedErrorJsonPath = "$.filter[0].var";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class MapExpressionTests {
@@ -22,5 +23,18 @@ public class MapExpressionTests {
     assertEquals(2.0, ((List) result).get(0));
     assertEquals(4.0, ((List) result).get(1));
     assertEquals(6.0, ((List) result).get(2));
+  }
+
+  @Test
+  public void testInvalidMap() {
+    String json =  "{\"map\": [\n" +
+        "  {\"var\": \"\"},\n" +
+        "  {\"*\": [{}, 2]}\n" +
+        // -------  ^  ---------
+        "]}";
+
+    String expectedErrorJsonPath = "$.map[1].*[0]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }

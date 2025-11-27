@@ -7,7 +7,7 @@ import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluationException;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicEvaluator;
 import io.github.jamsesso.jsonlogic.evaluator.JsonLogicExpression;
 
-public class LogicExpression implements JsonLogicExpression {
+public class LogicExpression extends JsonPathHandlerJsonLogicExpression implements JsonLogicExpression {
   public static final LogicExpression AND = new LogicExpression(true);
   public static final LogicExpression OR = new LogicExpression(false);
 
@@ -23,17 +23,23 @@ public class LogicExpression implements JsonLogicExpression {
   }
 
   @Override
-  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data, String jsonPath)
-    throws JsonLogicEvaluationException {
+  public Object evaluate(JsonLogicEvaluator evaluator, JsonLogicArray arguments, Object data)
+      throws JsonLogicEvaluationException {
     if (arguments.size() < 1) {
-      throw new JsonLogicEvaluationException(key() + " operator expects at least 1 argument", jsonPath);
+      throw new JsonLogicEvaluationException(key() + " operator expects at least 1 argument");
     }
 
     Object result = null;
 
-    int index = 0;
-    for (JsonLogicNode element : arguments) {
-      result = evaluator.evaluate(element, data, String.format("%s[%d]", jsonPath, index++));
+    for (int index = 0; index < arguments.size(); index++) {
+      JsonLogicNode element = arguments.get(index);
+
+      try {
+        result = evaluator.evaluate(element, data);
+      } catch (JsonLogicEvaluationException e) {
+        e.prependPartialJsonPath("[" + (index) + "]");
+        throw e;
+      }
 
       if ((isAnd && !JsonLogic.truthy(result)) || (!isAnd && JsonLogic.truthy(result))) {
         return result;

@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class AllExpressionTests {
@@ -16,5 +17,14 @@ public class AllExpressionTests {
   public void testAll() throws JsonLogicException {
     assertEquals(true, jsonLogic.apply("{\"all\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, 0]}]}", null));
     assertEquals(false, jsonLogic.apply("{\"all\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, 1]}]}", null));
+  }
+
+  @Test
+  public void testInvalidAll() {
+    String json = "{\"all\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, {}]}]}";
+    // ----------------------------------------------------------  ^  ----
+    String expectedErrorJsonPath = "$.all[1].>[1]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }

@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class LogicExpressionTests {
@@ -15,5 +16,14 @@ public class LogicExpressionTests {
   @Test
   public void testAnd() throws JsonLogicException {
     assertEquals("", jsonLogic.apply("{\"and\": [true, \"\", 3]}", null));
+  }
+
+  @Test
+  public void testInvalidLogicExpression() {
+    String json = "{\"or\": [0, {}, \"a\"]}";
+    // -----------------------  ^  ----------
+    String expectedErrorJsonPath = "$.or[1]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }

@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class SubstringExpressionTests {
@@ -35,5 +36,32 @@ public class SubstringExpressionTests {
   @Test
   public void testSubstringDoubleArgOutOfBounds() throws JsonLogicException {
     assertEquals("", jsonLogic.apply("{\"substr\": [\"jsonlogic\", 20, -40]}", null));
+  }
+
+  @Test
+  public void testInvalidSubstringArgumentLength() {
+    String json = "{\"substr\": [\"jsonlogic\"]}";
+    // ------------------------------------  ^  -------
+    String expectedErrorJsonPath = "$.substr";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
+  }
+
+  @Test
+  public void testInvalidSubstring_pos1() {
+    String json = "{\"substr\": [\"jsonlogic\", \"a\", 3]}";
+    // -----------------------------------------  ^  -------
+    String expectedErrorJsonPath = "$.substr[1]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
+  }
+
+  @Test
+  public void testInvalidSubstring_pos2() {
+    String json = "{\"substr\": [\"jsonlogic\", 1, \"a\"]}";
+    // ------------------------------------------  ^  ------
+    String expectedErrorJsonPath = "$.substr[2]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }

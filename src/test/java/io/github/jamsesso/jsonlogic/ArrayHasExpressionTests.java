@@ -2,6 +2,7 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import static io.github.jamsesso.jsonlogic.JsonLogicExceptionTestUtility.testErrorJsonPath;
 import static org.junit.Assert.assertEquals;
 
 public class ArrayHasExpressionTests {
@@ -37,5 +38,14 @@ public class ArrayHasExpressionTests {
   public void testNoneAll() throws JsonLogicException {
     assertEquals(true, jsonLogic.apply("{\"none\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, 3]}]}", null));
     assertEquals(false, jsonLogic.apply("{\"none\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, 2]}]}", null));
+  }
+
+  @Test
+  public void testInvalidArrayHasExpression() {
+    String json = "{\"some\": [[1, 2, 3], {\">\": [{\"var\": \"\"}, {}]}]}";
+    // -----------------------------------------------------------  ^  ----
+    String expectedErrorJsonPath = "$.some[1].>[1]";
+
+    testErrorJsonPath(jsonLogic, json, expectedErrorJsonPath);
   }
 }
