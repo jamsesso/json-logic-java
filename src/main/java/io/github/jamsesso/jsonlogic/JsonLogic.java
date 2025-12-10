@@ -9,12 +9,13 @@ import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public final class JsonLogic {
   private final Map<String, JsonLogicNode> parseCache = new ConcurrentHashMap<>();
   private final Map<String, JsonLogicExpression> expressions = new ConcurrentHashMap<>();
-  private JsonLogicEvaluator evaluator;
+  private final AtomicReference<JsonLogicEvaluator> evaluator = new AtomicReference<>();
 
   public JsonLogic() {
     // Add default operations
@@ -70,21 +71,24 @@ public final class JsonLogic {
 
   public JsonLogic addOperation(JsonLogicExpression expression) {
     expressions.put(expression.key(), expression);
-    evaluator = null;
-
+    evaluator.set(null);
     return this;
   }
 
   public Object apply(String json, Object data) throws JsonLogicException {
-    if (!parseCache.containsKey(json)) {
-      parseCache.put(json, JsonLogicParser.parse(json));
+    JsonLogicNode cached = parseCache.get(json);
+    if (cached == null) {
+      cached = JsonLogicParser.parse(json);
+      parseCache.putIfAbsent(json, cached);
     }
 
-    if (evaluator == null) {
-      evaluator = new JsonLogicEvaluator(expressions);
+    JsonLogicEvaluator localEvaluator = this.evaluator.get();
+    if (localEvaluator == null) {
+      this.evaluator.compareAndSet(null, new JsonLogicEvaluator(expressions));
+      localEvaluator = this.evaluator.get();
     }
 
-    return evaluator.evaluate(parseCache.get(json), data, "$");
+    return localEvaluator.evaluate(cached, data, "$");
   }
 
   public static boolean truthy(Object value) {
