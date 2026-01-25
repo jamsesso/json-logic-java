@@ -35,6 +35,12 @@ public class NumericComparisonExpression implements PreEvaluatedArgumentsExpress
     for (int i = 0; i < n; i++) {
       Object value = arguments.get(i);
 
+      // 处理 null 和空字符串，默认为 0
+      if (value == null || "".equals(value)) {
+        values[i] = 0.0;
+        continue;
+      }
+
       if (value instanceof String) {
         try {
           values[i] = Double.parseDouble((String) value);
