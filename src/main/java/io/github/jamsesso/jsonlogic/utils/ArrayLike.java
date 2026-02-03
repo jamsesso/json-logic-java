@@ -165,6 +165,9 @@ public class ArrayLike implements List<Object> {
     if (this == other) {
       return true;
     }
+    if (other instanceof Collection &&  ((Collection)other).size() != delegate.size()) {
+      return false;
+    }
 
     if (other instanceof Iterable) {
       int i = 0;
@@ -180,8 +183,8 @@ public class ArrayLike implements List<Object> {
         i++;
       }
 
-      if (i != delegate.size()) {
-        return false;
+      if (i == delegate.size()) {
+        return true;
       }
 
       return false;
