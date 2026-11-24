@@ -35,6 +35,15 @@ double result = (double) jsonLogic.apply(expression, data);
 assert result == 20.0;
 ```
 
+When building from source, you can supply a dedicated `ConcurrentMap<String, JsonLogicNode>` to control the lifetime of parsed rules. For example, an application using Caffeine can set a size limit at startup:
+
+```java
+Cache<String, JsonLogicNode> cache = Caffeine.newBuilder().maximumSize(1_000).build();
+JsonLogic jsonLogic = JsonLogic.withParseCache(cache.asMap());
+```
+
+The default constructor uses an unbounded cache. The supplied cache stores parsed rules, and each call to `apply` evaluates the rule against the current data. Concurrent misses can parse the same rule more than once. With Caffeine 2.x, map lookups bypass the cache's hit and miss counters.
+
 You can add your own operations like so:
 
 ```java
