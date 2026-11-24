@@ -9,14 +9,32 @@ import io.github.jamsesso.jsonlogic.evaluator.expressions.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 public final class JsonLogic {
-  private final Map<String, JsonLogicNode> parseCache = new ConcurrentHashMap<>();
+  private final ConcurrentMap<String, JsonLogicNode> parseCache;
   private final Map<String, JsonLogicExpression> expressions = new ConcurrentHashMap<>();
   private JsonLogicEvaluator evaluator;
 
   public JsonLogic() {
+    this(new ConcurrentHashMap<>());
+  }
+
+  /**
+   * Creates an evaluator using a caller-owned cache keyed by the original rule text.
+   * The caller may evict entries at any time.
+   *
+   * @param parseCache a concurrent map dedicated to parsed JsonLogic rules
+   * @return an evaluator backed by the supplied map
+   */
+  public static JsonLogic withParseCache(ConcurrentMap<String, JsonLogicNode> parseCache) {
+    return new JsonLogic(Objects.requireNonNull(parseCache, "parseCache"));
+  }
+
+  private JsonLogic(ConcurrentMap<String, JsonLogicNode> parseCache) {
+    this.parseCache = parseCache;
+
     // Add default operations
     addOperation(MathExpression.ADD);
     addOperation(MathExpression.SUBTRACT);
@@ -76,15 +94,18 @@ public final class JsonLogic {
   }
 
   public Object apply(String json, Object data) throws JsonLogicException {
-    if (!parseCache.containsKey(json)) {
-      parseCache.put(json, JsonLogicParser.parse(json));
+    JsonLogicNode rule = parseCache.get(json);
+    if (rule == null) {
+      JsonLogicNode parsed = JsonLogicParser.parse(json);
+      JsonLogicNode existing = parseCache.putIfAbsent(json, parsed);
+      rule = existing == null ? parsed : existing;
     }
 
     if (evaluator == null) {
       evaluator = new JsonLogicEvaluator(expressions);
     }
 
-    return evaluator.evaluate(parseCache.get(json), data, "$");
+    return evaluator.evaluate(rule, data, "$");
   }
 
   public static boolean truthy(Object value) {
