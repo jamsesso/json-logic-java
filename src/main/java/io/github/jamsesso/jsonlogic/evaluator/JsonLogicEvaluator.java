@@ -3,6 +3,7 @@ package io.github.jamsesso.jsonlogic.evaluator;
 import io.github.jamsesso.jsonlogic.ast.*;
 import io.github.jamsesso.jsonlogic.utils.ArrayLike;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class JsonLogicEvaluator {
@@ -62,11 +63,8 @@ public class JsonLogicEvaluator {
       int index = ((Number) key).intValue();
 
       if (ArrayLike.isEligible(data)) {
-        ArrayLike list = new ArrayLike(data);
-
-        if (index >= 0 && index < list.size()) {
-          return transform(list.get(index));
-        }
+        Object item = indexedValue(data, index);
+        return item == MISSING ? defaultValue : item;
       }
 
       return defaultValue;
@@ -99,9 +97,29 @@ public class JsonLogicEvaluator {
     throw new JsonLogicEvaluationException("var first argument must be null, number, or string", jsonPath + "[0]");
   }
 
+  private static Object indexedValue(Object data, int index) {
+    if (data.getClass().isArray()) {
+      if (index < 0 || index >= Array.getLength(data)) {
+        return MISSING;
+      }
+      return transform(Array.get(data, index));
+    }
+
+    List<?> values;
+    if (data instanceof List<?> && data instanceof RandomAccess) {
+      values = (List<?>) data;
+    } else {
+      values = new ArrayLike(data);
+    }
+
+    if (index < 0 || index >= values.size()) {
+      return MISSING;
+    }
+    return transform(values.get(index));
+  }
+
   private Object evaluatePartialVariable(String key, Object data, String jsonPath) throws JsonLogicEvaluationException {
     if (ArrayLike.isEligible(data)) {
-      ArrayLike list = new ArrayLike(data);
       int index;
 
       try {
@@ -111,11 +129,7 @@ public class JsonLogicEvaluator {
         throw new JsonLogicEvaluationException(e, jsonPath);
       }
 
-      if (index < 0 || index >= list.size()) {
-        return MISSING;
-      }
-
-      return transform(list.get(index));
+      return indexedValue(data, index);
     }
 
     if (data instanceof Map) {

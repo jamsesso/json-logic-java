@@ -2,11 +2,13 @@ package io.github.jamsesso.jsonlogic;
 
 import org.junit.Test;
 
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -203,6 +205,39 @@ public class VariableTests {
     Object result = jsonLogic.apply(rule, data);
 
     assertSame("Should return the same data instance", data, result);
+  }
+
+  @Test
+  public void indexedVarReadsOnlyTheRequestedListElement() throws JsonLogicException {
+    class CountingList extends AbstractList<Integer> implements RandomAccess {
+      int reads;
+
+      @Override
+      public Integer get(int index) {
+        reads++;
+        return index;
+      }
+
+      @Override
+      public int size() {
+        return 64;
+      }
+    }
+
+    CountingList items = new CountingList();
+    assertEquals(42.0, jsonLogic.apply("{\"var\":42}", items));
+    assertEquals(1, items.reads);
+
+    items.reads = 0;
+    assertEquals(42.0, jsonLogic.apply("{\"var\":\"items.42\"}", map("items", items)));
+    assertEquals(1, items.reads);
+  }
+
+  @Test
+  public void indexedPrimitiveArrayHandlesValuesAndMissingIndexes() throws JsonLogicException {
+    int[] items = {10, 20};
+    assertEquals(20.0, jsonLogic.apply("{\"var\":1}", items));
+    assertEquals("missing", jsonLogic.apply("{\"var\":[\"items.2\",\"missing\"]}", map("items", items)));
   }
 
   /** Helper to make small maps concisely. */
