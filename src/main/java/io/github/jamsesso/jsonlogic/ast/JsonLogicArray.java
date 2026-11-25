@@ -1,15 +1,49 @@
 package io.github.jamsesso.jsonlogic.ast;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 public class JsonLogicArray implements JsonLogicNode, List<JsonLogicNode> {
   private final List<JsonLogicNode> delegate;
+  private volatile Set<String> stringIndex;
 
   public JsonLogicArray(List<JsonLogicNode> delegate) {
     this.delegate = delegate;
+  }
+
+  void indexStringLiterals() {
+    if (delegate.size() < 16) {
+      return;
+    }
+    Set<String> strings = new HashSet<>();
+    for (JsonLogicNode node : delegate) {
+      if (!(node instanceof JsonLogicString)) {
+        return;
+      }
+      strings.add(((JsonLogicString) node).getValue());
+    }
+    stringIndex = strings;
+  }
+
+  /** Returns null when membership requires evaluating the array normally. */
+  public Boolean indexedStringMatch(Object value) {
+    Set<String> index = stringIndex;
+    if (index == null || (value != null && !(value instanceof String))) {
+      return null;
+    }
+    return index.contains(value);
+  }
+
+  private List<JsonLogicNode> mutableView() {
+    // An iterator or sublist can change the literals after it has been returned.
+    if (stringIndex != null) {
+      stringIndex = null;
+    }
+    return delegate;
   }
 
   @Override
@@ -34,7 +68,7 @@ public class JsonLogicArray implements JsonLogicNode, List<JsonLogicNode> {
 
   @Override
   public Iterator<JsonLogicNode> iterator() {
-    return delegate.iterator();
+    return mutableView().iterator();
   }
 
   @Override
@@ -119,16 +153,16 @@ public class JsonLogicArray implements JsonLogicNode, List<JsonLogicNode> {
 
   @Override
   public ListIterator<JsonLogicNode> listIterator() {
-    return delegate.listIterator();
+    return mutableView().listIterator();
   }
 
   @Override
   public ListIterator<JsonLogicNode> listIterator(int index) {
-    return delegate.listIterator(index);
+    return mutableView().listIterator(index);
   }
 
   @Override
   public List<JsonLogicNode> subList(int fromIndex, int toIndex) {
-    return delegate.subList(fromIndex, toIndex);
+    return mutableView().subList(fromIndex, toIndex);
   }
 }
