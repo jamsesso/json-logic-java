@@ -16,10 +16,13 @@ public interface PreEvaluatedArgumentsExpression extends JsonLogicExpression {
     throws JsonLogicEvaluationException {
     List<Object> values = evaluator.evaluate(arguments, data, jsonPath);
 
-    if (values.size() == 1 && ArrayLike.isEligible(values.get(0))) {
-      values = new ArrayLike(values.get(0));
-    }
+    return evaluate(unpackArguments(values), data, jsonPath);
+  }
 
-    return evaluate(values, data, jsonPath);
+  static List<Object> unpackArguments(List<Object> values) {
+    if (values.size() == 1 && ArrayLike.isEligible(values.get(0))) {
+      return new ArrayLike(values.get(0));
+    }
+    return values;
   }
 }

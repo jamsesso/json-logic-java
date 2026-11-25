@@ -90,6 +90,9 @@ public final class JsonLogicParser {
     }
 
     // Handle regular operations
+    if ("in".equals(key) && arguments.size() == 2 && arguments.get(1) instanceof JsonLogicArray) {
+      ((JsonLogicArray) arguments.get(1)).indexStringLiterals();
+    }
     return new JsonLogicOperation(key, arguments);
   }
 }
